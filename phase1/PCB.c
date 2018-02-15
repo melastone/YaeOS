@@ -21,15 +21,13 @@ pcb_t *pcbfree_h  /* testa della lista pcbFree */
 
 /************************* Allocazione e deallocazione dei PCB ************************/
 
+
 /// Inizializza la pcbFree in modo da contenere tutti gli elementi della pcbFree_table. 
 /// Questo metodo deve essere chiamato una volta sola in fase di inizializzazione della 
 /// struttura dati.
 void initPcbs() {
 
-	static pcb_t pcbFree_table[MAXPROC] ;
-
 }
-
 
 /// Inserisce il PCB puntato da p nella lista dei PCB liberi
 void freePcb (pcb_t *p) {
