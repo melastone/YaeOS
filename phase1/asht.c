@@ -1,7 +1,8 @@
-//  ASHL.c
+//  
+//	ASHT.c
 //  Yet Another Educational Operating System Phase 1
 //
-//  Active Semaphore List Implementation File
+//  Active Semaphore Hash Table Implementation File
 //
 //  Creato il 15/02/2018
 //
@@ -11,8 +12,3 @@
 //  Lorenzo Poluzzi
 //  Melania Ghelli
 //
-
-
-
-
-
