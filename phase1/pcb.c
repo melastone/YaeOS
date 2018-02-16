@@ -29,7 +29,6 @@ void initPcbs() {
 
 }
 
-
 /// Inserisce il PCB puntato da p nella lista dei PCB liberi
 void freePcb (pcb_t *p) {
 
