@@ -27,8 +27,6 @@ pcb_t *pcbfree_h  /* testa della lista pcbFree */
 /// struttura dati.
 void initPcbs() {
 
-	static pcb_t pcbFree_table[MAXPROC] ;
-
 }
 
 
