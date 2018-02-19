@@ -15,12 +15,34 @@
 
 #include "../const.h"
 #include "../types.h"
-#include "../asht.h"
 
+//puntatore allla testa della lista  dei SEMD  liberi
+semd_t *semdFree_h
+
+//hash table dei semafori attivi.
+semd_t *semdhash[ASHDSIZE]
 
 void initASL(){
 	
-	semd_t semd_table[MAXSEMD];
+	static semd_t semd_table[MAXSEMD];
+
+	int i=0;
+	initASLRic(i, semd_t semd_table[MAXSEMD], semdFree_h, NULL);
+}
+
+void initASLRic(int i, semd_t semdArray[], semd_t * semdFree_head, semd_t * semdFree_succ){
+	if(i == 0){
+		semdFree_head = &semdArray[i];
+		semdFree_head->s_next = semdFree_prec;
+		i++;
+	}
+	else if(i < MAXSEMD-1){
+		semdFree_succ = &semdArray[i];
+		semdFree_succ->s_next = NULL;
+		semdFree_head->s_next = semdFree_succ;
+		i++;
+	}
+	initASLRic(i,semdArray[],semdFree_head,semdFree_head->s_next);
 }
 
 int insertBlocked(int *key, pcb_t *p){

@@ -64,3 +64,27 @@ pcb_t *outProcQ(pcb_t **head, pcb_t *p);
 //Richiama la funzione fun per ogni elemento della lista puntata da head
 void forallProcQ(pcb_t *head, void fun(pcb_t *pcb, void *), void *arg);
 
+/****************************** Gestione dei ASHT ******************************/
+
+//inizializzare l'hash table dei semafori
+void initASL();
+
+//Inserimento del PCB puntato da p nel dei semaforo corrispondente a key se non
+//è presente ne alloca uno nuovo da quelli liberi. Restituisce -1 se non è possibile
+//allocarne uno nuovo negli altri casi restituisce 0.
+int insertBlocked(int *key, pcb_t *p);
+
+// Restituisce il puntatore al pcb del primo processo bloccato sul semaforo, senza deaccordarlo.
+// Se il semaforo non esiste restituisce NULL
+pcb_t* headBlocked(int *key);
+
+//Ritorna il primo PCB dalla coda dei processi bloccati associata al SEMD della ASHT con chiave key.
+// se non esiste nella ASHT, restituisce NULL. Altrimenti, restituisce l’elemento  rimosso.
+//Se la coda dei processi diventa vuota, rimuove il descrittore lo inserisce nella coda dei descrittori liberi 
+pcb_t* removeBlocked(int *key);
+
+//richiama la funzione fun per ogni processo bloccato sul semaforo identificato da key.
+void forallBlocked(int *key, void fun(pcb_t *pcb, void *), void *arg);
+
+// Rimuove il PCB puntato da p dalla coda del semaforo su cui è  bloccato
+pcb_t* outChildBlocked(pcb_t *p);
