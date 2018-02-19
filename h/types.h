@@ -24,6 +24,15 @@ typedef struct pcb_t {
 	int *p_semKey;
 } pcb_t;
 
+
+
+typedef struct semd_t {
+	struct semd_t *s_next;		  /*ASHL list link*/
+	int *s_key;                   /*indirizzo variabile intera che contiene il valore del semaforo*/
+	struct pcb_t *s_procQ;		  /*coda processi bloccati*/
+	
+} semd_t;
+
 /************************* Allocazione e deallocazione dei PCB ************************/
 
 //inizializzazione pcb
