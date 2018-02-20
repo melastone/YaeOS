@@ -16,11 +16,18 @@
 #include "../const.h"
 #include "../types.h"
 
+
 //puntatore allla testa della lista dei SEMD  liberi
 semd_t *semdFree_h
+
 //hash table dei semafori attivi.
 semd_t *semdhash[ASHDSIZE]
 static semd_t semd_table[MAXSEMD];
+
+
+/***************************************************************
+*                    ACTIVE SEMAPHORE HASH TABLE               *
+***************************************************************/
 
 
 void initASL(){
@@ -35,26 +42,62 @@ void initASL(){
 int insertBlocked(int *key, pcb_t *p){
 	int indice = hash(key);
 	semd_t *trovato = getSemByKey(semdhash[indice],key);
-	if(trovato != NULL){
-		p->p_semKey = key; //assegno la chiave del SEMD anche nel PCB
-		insertProcQ(trovato->s_procQ, p); 
-		return 0;
-	}else{
-		if(semdFree_h != NULL){
-			semd_t * semdFree = semdFree_h; //prendo un SEMD dalla lista di quelli liberi
-			semdFree_h = semdFree_h->s_next; //tolgo SEMD che ho appena preso
-			//setto i campi del SEMD
-			semdFree->s_next = NULL;
-			semdFree->s_key = key;
-			//setto la key del processo
-			p->p_semKey = key;
-			semdFree->s_procQ = p;
-			//inserisco SEMD nel HASH TABLE
-			semdInsert(&semdhash[n],semdFree);
+	
+	if (p != NULL){
+
+		if(trovato != NULL){
+			p->p_semKey = key; //assegno la chiave del SEMD anche nel PCB
+			insertProcQ(trovato->s_procQ, p); 
 			return 0;
+		}else{
+			if(semdFree_h != NULL){
+				semd_t * semdFree = semdFree_h; //prendo un SEMD dalla lista di quelli liberi
+				semdFree_h = semdFree_h->s_next; //tolgo SEMD che ho appena preso
+				//setto i campi del SEMD
+				semdFree->s_next = NULL;
+				semdFree->s_key = key;
+				//setto la key del processo
+				p->p_semKey = key;
+				semdFree->s_procQ = p;
+				//inserisco SEMD nel HASH TABLE
+				semdInsert(&semdhash[indice],semdFree);
+				return 0;
+			}
 		}
 	}
+	
 	return -1;
+}
+
+pcb_t* removeBlocked(int *key){
+	//Cerco il descrittore associato alla chiave Key (potrebbe non essere attivo)
+	int index = hash(key);
+	semd_t *trovato = getSemByKey(semdhash[index],key);
+	
+	//Ritorno NULL se il semaforo non è attivo
+	if (trovato == NULL ){
+		return NULL
+	}
+
+	//Se il semaforo è attivo, controllo i processi bloccati
+	if (trovato != NULL){
+		//Se non è l'unico processo nella coda dei processi bloccati
+		//lo rimuovo e restituisco il pcb rimosso
+		if(trovato->s_procQ->s_next != NULL){
+			pcb_t* removedPCB = trovato->s_procQ;
+			trovato->s_procQ = trovato->s_procQ->s_next;
+			return removedPCB;
+		}
+
+		//Se è l'unico rimasto in coda, lo rimuovo e riporto il SEMD 
+		//nella lista dei descrittori liberi
+		if(trovato->s_procQ->s_next == NULL){
+			pcb_t* removedPCB = trovato->s_procQ;
+			trovato->s_procQ = NULL;
+			semdInsert(&trovato,semdFree);
+			return removedPCB;
+		}
+	}
 }
 
 pcb_t *headBlocked(int *key){
@@ -67,6 +110,16 @@ pcb_t *headBlocked(int *key){
 	return NULL;
 }
 
+pcb_t* outChildBlocked(pcb_t *p){
+
+	if (p != NULL){
+		removeBlocked(p->p_semKey);
+	}
+
+	else return NULL;
+
+}
+
 void forallBlocked(int *key, void fun(pcb_t *pcb, void *), void *arg){
 	pcb_t *tmp = headBlocked(key);
 	if(tmp != NULL){
@@ -75,14 +128,22 @@ void forallBlocked(int *key, void fun(pcb_t *pcb, void *), void *arg){
 
 }
 
-/************************* FUNZIONI AUSILIARIE ************************/
+
+
+
+
+
+/***************************************************************
+*                    FUNZIONI AUSILIARIE                       *
+***************************************************************/
+
 
 //funzione ausiliaria per inizializzare la lista dei semafori liberi
 void initASLRic(int i, semd_t * semdElement){
 	
 	if (i<MAXSEMD) {
 		semdElement->s_next = semdFree_h;
-		semdFree_h = semdEle = key;ment;
+		semdFree_h = semdElement;
 	}
 	initASLRic(i++, &semd_table[i]);
 }
@@ -98,11 +159,33 @@ semd_t * getSemByKey(semd_t *semdhash,int *key){
 	return NULL;
 }
 
-//Inserimento nuovo SEMD all'interno del HASH TABLE
-void semdInsert(semd_t **semdhash, semd_t *semdFree){
-	if(*semdhash == NULL){
-		*semdhash = semdFree;
+//Inserimento nuovo SEMD ELEMENT all'interno del HASH TABLE dei SEMD FREE
+void semdInsert(semd_t **semdElement, semd_t *semdFree){
+	if(*semdElement == NULL){
+		*semdElement = semdFree;
 	}else{
-		semdInsert(&(*semdhash)->s_next,semdFree);
+		semdInsert(&(*semdElement)->s_next,semdFree);
 	}
 }
+
+
+/************************* HASH FUNCTION ************************/
+
+unsigned int hash(unsigned int x) {
+    //calcolo il valore di hash
+    x = ((x >> 16) ^ x) * 0x45d9f3b;
+    x = ((x >> 16) ^ x) * 0x45d9f3b;
+    x = (x >> 16) ^ x;
+	
+	//riporto l'hash calcolata in un indice fra 0 e ASHDZISE-1
+    x = x % ASHDSIZE;
+   
+    return x;
+}
+
+
+
+
+
+
+
