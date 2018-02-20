@@ -94,7 +94,7 @@ pcb_t* removeBlocked(int *key){
 		else{
 				trovato->s_procQ = NULL;
 				semdInsert(&semdFree_h,trovato);
-				trovato = NULL;//ERRRORE!!!!!!!!!!!!!!!!!!!!!
+				semdRemove(&semdhash[indice],key);
 		}
 		return removedPCB;
 	}
@@ -113,9 +113,10 @@ pcb_t *headBlocked(int *key){
 pcb_t* outChildBlocked(pcb_t *p){
 	//controllo che il pcb non sia nullo
 	if (p != NULL){
-		int index = hash(p->p_semKey);
-		semd_t *trovato = getSemByKey(semdhash[index],p->p_semKey);
-		pcb_t * semdHead = headBlocked(p->p_semKey);
+		int key = p->p_semKey;
+		int index = hash(key);
+		semd_t *trovato = getSemByKey(semdhash[index],key);
+		pcb_t * semdHead = headBlocked(key);
 
 		if(semdHead != NULL){
 			pcb_t * temp = outProcQ(&semdHead,p);
@@ -123,7 +124,7 @@ pcb_t* outChildBlocked(pcb_t *p){
 			if(semdHead == NULL){
 				trovato->s_procQ = NULL;
 				semdInsert(&semdFree_h,trovato);
-				trovato = NULL;//ERRRORE!!!!!!!!!!!!!!!!!!!!!
+				semdRemove(&semdhash[indice],key);
 			}
 			return temp;
 		}
@@ -172,7 +173,7 @@ semd_t * getSemByKey(semd_t *semdhash,int *key){
 	return NULL;
 }
 
-//Inserimento nuovo SEMD ELEMENT all'interno del HASH TABLE dei SEMD FREE
+//Inserimento nuovo SEMD ELEMENT all'interno del HASH TABLE dei SEMD attivi
 void semdInsert(semd_t **semdHead, semd_t *semdElement){
 	if(*semdHead == NULL){
 		*semdHead = semdElement;
@@ -181,7 +182,16 @@ void semdInsert(semd_t **semdHead, semd_t *semdElement){
 	}
 }
 
-
+//Rimozione SEMD attraverso la key all'interno della lista puntata dalla HASH TABLE dei SEMD attivi
+void semdRemove(semd_t **semdHead,int *key){
+	if(*semdHead != NULL){
+		if((*semdHead)->s_key == key){
+			(*semdHead) = (*semdHead) ->s_next;
+		}else{
+			semdRemove(&(*semdHead->s_next),key);
+		}
+	}
+}
 /************************* HASH FUNCTION ************************/
 
 unsigned int hash(unsigned int x) {
