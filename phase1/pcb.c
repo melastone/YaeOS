@@ -11,7 +11,6 @@
 //  Melania Ghelli
 //
 
-//#include <stdio.h>
 #include <uARMtypes.h>
 #include "const.h"
 #include "pcb.h"
@@ -25,7 +24,6 @@ pcb_t *pcbfree_h ; /* testa della lista pcbFree */
 
 
 /// Funzione ausiliaria per la chiamata ricorsiva di initPcb().
-
 void initPcbsRic(pcb_t pcbArray[], int i, pcb_t *pcbfree_fun){
 	
 	if(i<MAXPROC){
@@ -106,56 +104,80 @@ pcb_t *allocPcb() {
 
 
 /****************************** Gestione delle code dei PCB ******************************/
-/*
+
 /// Inserisce l'elemento puntato da p nella coda dei processi puntata da head.
 /// L'inserimento deve avvenire tenendo conto della priorità di ciascun PCB.
 /// La coda dei processi deve essere ordinata in base alla priorità dei PCB, in ordine 
 /// decrescente (i.e. l'elemento di testa è l'elemento con la priorità più alta).
 void insertProcQ(pcb_t **head, pcb_t *p) {
-	if(**head->*head == NULL) **head->*head = *p;
-	else if(**head->*head->next == NULL) {
-		if(**head->*head->priority < *p->priority){
-			pcb_t *tmp;
-			*tmp = **head->*head;
-			**head->*head = *p;
-			**head->*head->next = *tmp;
-		} else {
-			**head->*head->next = *p;
+	
+	// Se procQ è vuota
+	if(*head == NULL) (*head) = p;
+	
+	// Se procQ ha un solo elemento
+	else if((*head)->p_next == NULL) {
+		
+		if((*head)->p_priority < p->p_priority) {
+			p->p_next = (*head);
+			(*head) = p;
+		} 
+		else {
+			(*head)->p_next = p;
 		}
-	} else {
-		insertProcQ(**head->next,*p);
+
+	} 
+	else {
+		
+		insertProcQ(&(*head)->p_next, p);
+	
 	}
 }
+
 
 /// Restituisce l'elemento di testa della coda dei processi puntata da head, senza 
 /// rimuoverlo. Ritorna NULL se la coda non ha elementi.
 pcb_t *headProcQ(pcb_t *head) {
-	if(*head == NULL) return NULL;
-	else return *head;
+
+	if(head == NULL) return NULL;
+	
+	else return head;
 }
+
 
 /// Rimuove il primo elemento della coda dei processi puntata da head. 
 /// Ritorna NULL se la coda è vuota. Altrimenti ritorna il puntatore all'elemento rimosso.
 pcb_t *removeProcQ(pcb_t **head) {
-	if(**head->*head == NULL) return NULL;
+	
+	// tmp punta all'elemento da rimuovere
+    pcb_t *tmp = headProcQ((*head)) ;
+   
+    // Se la coda è vuota
+	if (tmp == NULL) return NULL;
+	
 	else {
-		pcb_t *tmp = **head->*head;
-		**head = **head->*head->next;
-		return *tmp;
+
+		head = &((*head)->p_next);
+		return tmp;
+	
 	}
 }
 
 /// Rimuove il PCB puntato da p dalla coda dei processi puntata da head. Se p non è 
 /// presente nella coda restituisce NULL. Nota: p può trovarsi in una posizione arbitraria.
 pcb_t *outProcQ(pcb_t **head, pcb_t *p) {
-	if(**head->*head == *p) {
-		pcb_t *tmp = **head->*head;
-		**head = **head->*head->next;
-		return *tmp;	
-	} else if(**head->*head != *p && *head->next == NULL){
-		return null;
-	} else {
-		return *outProcQ(**head->next, *p);
+	
+	// Se p si trova in testa
+	if((*head) == p) {
+		return removeProcQ(head) ;	
+	}
+
+	// Se p non è presente nella coda 
+	else if((*head) != p && (*head)->p_next == NULL){
+		return NULL;
+	} 
+
+	else {
+		return outProcQ(&(*head)->p_next, p);
 	}
 }
 
@@ -163,8 +185,7 @@ pcb_t *outProcQ(pcb_t **head, pcb_t *p) {
 /// Richiama la funzione fun per ogni elemento della lista puntata da head.
 void forallProcQ(pcb_t *head, void fun(pcb_t *pcb, void *), void *arg) {
 
-}*/
-
+}
 
 
 /****************************** Gestione dell'albero dei PCB *****************************/
