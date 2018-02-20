@@ -66,39 +66,30 @@ void freePcb (pcb_t *p) {
 	else freePcbRic(pcbfree_h->p_next, p);
 }
 
-/// Funzione ausiliaria per la chiamata ricorsiva di allocPcb().
-pcb_t *allocPcbRic(pcb_t *pcbfree_fun) {
-	
-	pcb_t *pcb_rimosso;
-	
-	if(pcbfree_fun->p_next == NULL) {
-		pcb_rimosso = pcbfree_fun;
-		pcbfree_fun = pcbfree_fun->p_next;
-		return pcb_rimosso;
-	} else{
-		return allocPcbRic(pcbfree_fun->p_next);
-	}
-}
-
 
 /// Restituisce NULL se la pcbFree è vuota - CIOÈ SE NON CI SONO PCB LIBERI - . 
 /// Altrimenti rimuove un elemento dalla pcbFree, inizializza tutti i campi (NULL/0) 
 /// e restituisce l'elemento rimosso.
 pcb_t *allocPcb() {
 
-	pcb_t *pcb_rimosso;
-	
 	// Se la pcbFree è vuota
 	if(pcbfree_h == NULL) return NULL;
 	
-	// Se la pcbFree contiene un solo elemento
-	else if(pcbfree_h->p_next == NULL) {
-		pcb_rimosso = pcbfree_h;
-		pcbfree_h = pcbfree_h->p_next;
-		return pcb_rimosso;
-	} else {
-		return allocPcbRic(pcbfree_h->p_next);
-	}
+	// Rimuove l'elemento in testa alla pcbFree
+	pcb_t *pcb_rimosso = removeProcQ(&pcbfree_h) ;
+
+	// Inizializza i campi a NULL e restituisce l'elemento
+    pcb_rimosso->p_next = NULL ;
+
+    pcb_rimosso->p_parent = NULL ;
+    pcb_rimosso->p_first_child = NULL ;
+    pcb_rimosso->p_sib = NULL ;
+
+    pcb_rimosso->p_s = NULL ;
+    pcb_rimosso->p_priority = 0 ;
+    pcb_rimosso->p_semKey = NULL ;
+
+    return pcb_rimosso ;
 }
 
 
