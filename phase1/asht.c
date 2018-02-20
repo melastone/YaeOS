@@ -40,11 +40,12 @@ void initASL(){
 
 
 int insertBlocked(int *key, pcb_t *p){
-	int indice = hash(key);
-	semd_t *trovato = getSemByKey(semdhash[indice],key);
-	
 	if (p != NULL){
+		//Cerco il descrittore associato alla chiave Key (potrebbe non essere attivo)
+		int indice = hash(key);
+		semd_t *trovato = getSemByKey(semdhash[indice],key);
 
+		//Ritorno NULL se il semaforo non è attivo
 		if(trovato != NULL){
 			p->p_semKey = key; //assegno la chiave del SEMD anche nel PCB
 			insertProcQ(trovato->s_procQ, p); 
@@ -80,23 +81,22 @@ pcb_t* removeBlocked(int *key){
 	}
 
 	//Se il semaforo è attivo, controllo i processi bloccati
-	if (trovato != NULL){
+	else{
+		pcb_t* removedPCB = trovato->s_procQ;
 		//Se non è l'unico processo nella coda dei processi bloccati
 		//lo rimuovo e restituisco il pcb rimosso
 		if(trovato->s_procQ->s_next != NULL){
-			pcb_t* removedPCB = trovato->s_procQ;
 			trovato->s_procQ = trovato->s_procQ->s_next;
-			return removedPCB;
 		}
 
-		//Se è l'unico rimasto in coda, lo rimuovo e riporto il SEMD 
-		//nella lista dei descrittori liberi
-		if(trovato->s_procQ->s_next == NULL){
-			pcb_t* removedPCB = trovato->s_procQ;
-			trovato->s_procQ = NULL;
-			semdInsert(&trovato,semdFree);
-			return removedPCB;
+			//Se è l'unico rimasto in coda, lo rimuovo e riporto il SEMD 
+			//nella lista dei descrittori liberi
+		else{
+				trovato->s_procQ = NULL;
+				semdInsert(&semdFree_h,trovato);
+				trovato = NULL;//ERRRORE!!!!!!!!!!!!!!!!!!!!!
 		}
+		return removedPCB;
 	}
 }
 
@@ -111,12 +111,25 @@ pcb_t *headBlocked(int *key){
 }
 
 pcb_t* outChildBlocked(pcb_t *p){
-
+	//controllo che il pcb non sia nullo
 	if (p != NULL){
-		removeBlocked(p->p_semKey);
-	}
+		int index = hash(p->p_semKey);
+		semd_t *trovato = getSemByKey(semdhash[index],p->p_semKey);
+		pcb_t * semdHead = headBlocked(p->p_semKey);
 
-	else return NULL;
+		if(semdHead != NULL){
+			pcb_t * temp = outProcQ(&semdHead,p);
+			//si modifica la testa della lista dei processi modificati nel caso sia p l'unico processo
+			if(semdHead == NULL){
+				trovato->s_procQ = NULL;
+				semdInsert(&semdFree_h,trovato);
+				trovato = NULL;//ERRRORE!!!!!!!!!!!!!!!!!!!!!
+			}
+			return temp;
+		}
+	}
+	
+	return NULL;
 
 }
 
@@ -160,11 +173,11 @@ semd_t * getSemByKey(semd_t *semdhash,int *key){
 }
 
 //Inserimento nuovo SEMD ELEMENT all'interno del HASH TABLE dei SEMD FREE
-void semdInsert(semd_t **semdElement, semd_t *semdFree){
-	if(*semdElement == NULL){
-		*semdElement = semdFree;
+void semdInsert(semd_t **semdHead, semd_t *semdElement){
+	if(*semdHead == NULL){
+		*semdHead = semdElement;
 	}else{
-		semdInsert(&(*semdElement)->s_next,semdFree);
+		semdInsert(&(*semdHead)->s_next,semdElement);
 	}
 }
 
