@@ -4,20 +4,6 @@
 #include "types.h"
 #include "const.h"
 
-/************************* Allocazione e deallocazione dei PCB ************************/
-
-extern void initPcbsRic(pcb_t procArray[], int i,pcb_t *pcbfree_fun) ;
-
-extern void initPcbs() ;
-
-extern void freePcbRic(pcb_t *pcbfree_fun, pcb_t *p) ;
-
-extern void freePcb (pcb_t *p) ;
-
-extern pcb_t *allocPcbRic(pcb_t *pcbfree_fun) ; 
-
-extern pcb_t *allocPcb() ;
-
 
 /****************************** Gestione delle code dei PCB ******************************/
 
@@ -31,6 +17,15 @@ extern pcb_t *outProcQ(pcb_t **head, pcb_t *p) ;
 
 extern void forallProcQ(pcb_t *head, void fun(pcb_t *pcb, void *), void *arg) ;
 
+/************************* Allocazione e deallocazione dei PCB ************************/
+
+extern void freePcb (pcb_t *p) ;
+
+extern void initPcbsRic(pcb_t procArray[], int i,pcb_t *pcbfree_fun) ;
+
+extern void initPcbs() ;
+
+extern pcb_t *allocPcb() ;
 
 /****************************** Gestione dell'albero dei PCB *****************************/
 

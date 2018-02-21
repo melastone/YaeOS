@@ -20,80 +20,6 @@ pcb_t *pcbfree_h ; /* testa della lista pcbFree */
 
 
 
-/************************* Allocazione e deallocazione dei PCB ************************/
-
-
-/// Funzione ausiliaria per la chiamata ricorsiva di initPcb().
-void initPcbsRic(pcb_t pcbArray[], int i, pcb_t *pcbfree_fun){
-	
-	if(i<MAXPROC){
-		pcbfree_fun = &pcbArray[i];
-		i++;
-		initPcbsRic(pcbArray, i, pcbfree_fun->p_next);
-	}
-}
-
-
-/// Inizializza la pcbFree in modo da contenere tutti gli elementi della pcbFree_table. 
-/// Questo metodo deve essere chiamato una volta sola in fase di inizializzazione della 
-/// struttura dati.
-void initPcbs() {
-
-	static struct pcb_t pcbFree_table[MAXPROC];
-	
-	int i = 0;
-	initPcbsRic(pcbFree_table, i, pcbfree_h);
-}
-
-
-/// Funzione ausiliaria per la chiamata ricorsiva di freePcbs().
-void freePcbRic(pcb_t *pcbfree_fun, pcb_t *p){
-    
-    if(pcbfree_h == NULL) pcbfree_h = p;
-
-	else if (pcbfree_fun->p_next == NULL) pcbfree_fun->p_next = p;
-	
-	else freePcbRic(pcbfree_fun->p_next, p);
-}
-
-
-/// Inserisce il PCB puntato da p nella lista dei PCB liberi.
-void freePcb (pcb_t *p) {
-	
-	// Se la pcbFree è vuota
-	if(pcbfree_h == NULL) pcbfree_h = p;
-
-	else freePcbRic(pcbfree_h->p_next, p);
-}
-
-
-/// Restituisce NULL se la pcbFree è vuota - CIOÈ SE NON CI SONO PCB LIBERI - . 
-/// Altrimenti rimuove un elemento dalla pcbFree, inizializza tutti i campi (NULL/0) 
-/// e restituisce l'elemento rimosso.
-pcb_t *allocPcb() {
-
-	// Se la pcbFree è vuota
-	if(pcbfree_h == NULL) return NULL;
-	
-	// Rimuove l'elemento in testa alla pcbFree
-	pcb_t *pcb_rimosso = removeProcQ(&pcbfree_h) ;
-
-	// Inizializza i campi a NULL e restituisce l'elemento
-    pcb_rimosso->p_next = NULL ;
-
-    pcb_rimosso->p_parent = NULL ;
-    pcb_rimosso->p_first_child = NULL ;
-    pcb_rimosso->p_sib = NULL ;
-
-    pcb_rimosso->p_s = NULL ;
-    pcb_rimosso->p_priority = 0 ;
-    pcb_rimosso->p_semKey = NULL ;
-
-    return pcb_rimosso ;
-}
-
-
-
 /****************************** Gestione delle code dei PCB ******************************/
 
 /// Inserisce l'elemento puntato da p nella coda dei processi puntata da head.
@@ -148,8 +74,7 @@ pcb_t *removeProcQ(pcb_t **head) {
 	else {
 
 		head = &((*head)->p_next);
-		return tmp;
-	
+		return tmp ;
 	}
 }
 
@@ -159,7 +84,7 @@ pcb_t *outProcQ(pcb_t **head, pcb_t *p) {
 	
 	// Se p si trova in testa
 	if((*head) == p) {
-		return removeProcQ(head) ;	
+		return removeProcQ(&(*head)) ;	
 	}
 
 	// Se p non è presente nella coda 
@@ -177,6 +102,92 @@ pcb_t *outProcQ(pcb_t **head, pcb_t *p) {
 void forallProcQ(pcb_t *head, void fun(pcb_t *pcb, void *), void *arg) {
 
 }
+
+
+
+/************************* Allocazione e deallocazione dei PCB ************************/
+
+/// Inserisce il PCB puntato da p nella lista dei PCB liberi.
+void freePcb (pcb_t *p) {
+	
+	insertProcQ(&pcbfree_h, p) ;
+
+}
+
+
+/// Funzione ausiliaria per la chiamata ricorsiva di initPcb().
+void initPcbsRic(pcb_t pcbArray[], int i, pcb_t *pcbfree_fun){
+	
+	if(i<MAXPROC){
+		freePcb(&pcbArray[i]);
+		pcbfree_fun = &pcbArray[i];
+		i++;
+		initPcbsRic(pcbArray, i, pcbfree_fun->p_next);
+	}
+
+}
+
+
+/// Inizializza la pcbFree in modo da contenere tutti gli elementi della pcbFree_table. 
+/// Questo metodo deve essere chiamato una volta sola in fase di inizializzazione della 
+/// struttura dati.
+void initPcbs() {
+
+	static struct pcb_t pcbFree_table[MAXPROC];
+	
+	int i = 0;
+	initPcbsRic(pcbFree_table, i, pcbfree_h);
+}
+
+
+/// Restituisce NULL se la pcbFree è vuota - CIOÈ SE NON CI SONO PCB LIBERI - . 
+/// Altrimenti rimuove un elemento dalla pcbFree, inizializza tutti i campi (NULL/0) 
+/// e restituisce l'elemento rimosso.
+pcb_t *allocPcb() {
+
+	// Rimuove l'elemento in testa alla pcbFree
+	pcb_t *pcb_rimosso = removeProcQ(&pcbfree_h) ;
+
+	if (pcb_rimosso != NULL) {
+
+		// Inizializza i campi a NULL e restituisce l'elemento
+	    pcb_rimosso->p_next = NULL ;
+
+	    pcb_rimosso->p_parent = NULL ;
+	    pcb_rimosso->p_first_child = NULL ;
+	    pcb_rimosso->p_sib = NULL ;
+
+	    //Inizializzo tutti i campi della struttura p_s a null
+	    pcb_rimosso->p_s.a1 = 0;
+		pcb_rimosso->p_s.a2 = 0 ;
+		pcb_rimosso->p_s.a3 = 0 ;
+		pcb_rimosso->p_s.a4 = 0 ;
+		pcb_rimosso->p_s.v1 = 0 ;
+		pcb_rimosso->p_s.v2 = 0 ;
+		pcb_rimosso->p_s.v3 = 0 ;
+		pcb_rimosso->p_s.v4 = 0 ;
+		pcb_rimosso->p_s.v5 = 0 ;
+		pcb_rimosso->p_s.v6 = 0 ;
+		pcb_rimosso->p_s.sl = 0 ;
+		pcb_rimosso->p_s.fp = 0 ;
+		pcb_rimosso->p_s.ip = 0 ;
+		pcb_rimosso->p_s.sp = 0 ;
+		pcb_rimosso->p_s.lr = 0 ;
+		pcb_rimosso->p_s.pc = 0 ;
+		pcb_rimosso->p_s.cpsr = 0 ;
+		pcb_rimosso->p_s.CP15_Control = 0 ;
+		pcb_rimosso->p_s.CP15_EntryHi = 0;
+		pcb_rimosso->p_s.CP15_Cause = 0 ;
+		pcb_rimosso->p_s.TOD_Hi = 0 ;
+		pcb_rimosso->p_s.TOD_Low = 0 ;
+
+	    pcb_rimosso->p_priority = 0 ;
+	    pcb_rimosso->p_semKey = NULL ;
+	}
+
+    return pcb_rimosso ;
+}
+
 
 
 /****************************** Gestione dell'albero dei PCB *****************************/
