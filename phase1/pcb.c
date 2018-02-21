@@ -12,6 +12,7 @@
 //
 
 #include <uARMtypes.h>
+
 #include "const.h"
 #include "pcb.h"
 #include "types.h"
@@ -29,7 +30,7 @@ pcb_t *pcbfree_h ; /* testa della lista pcbFree */
 void insertProcQ(pcb_t **head, pcb_t *p) {
 	
 	// Se procQ è vuota
-	if(*head == NULL) (*head) = p;
+	if((*head) == NULL) (*head) = p;
 	
 	// Se procQ ha un solo elemento
 	else if((*head)->p_next == NULL) {
@@ -66,16 +67,16 @@ pcb_t *headProcQ(pcb_t *head) {
 pcb_t *removeProcQ(pcb_t **head) {
 	
 	// tmp punta all'elemento da rimuovere
-    pcb_t *tmp = headProcQ((*head)) ;
+    pcb_t *tmp = headProcQ(*head) ;
    
-    // Se la coda è vuota
-	if (tmp == NULL) return NULL;
-	
-	else {
+    // Se la coda non è vuota
+	if (tmp != NULL) {
 
-		head = &((*head)->p_next);
-		return tmp ;
+		(*head) = (*head)->p_next;
+		tmp->p_next = NULL ;
 	}
+
+	return tmp ;
 }
 
 /// Rimuove il PCB puntato da p dalla coda dei processi puntata da head. Se p non è 
@@ -116,13 +117,12 @@ void freePcb (pcb_t *p) {
 
 
 /// Funzione ausiliaria per la chiamata ricorsiva di initPcb().
-void initPcbsRic(pcb_t pcbArray[], int i, pcb_t *pcbfree_fun){
+void initPcbsRic(pcb_t pcbArray[], int i){
 	
 	if(i<MAXPROC){
 		freePcb(&pcbArray[i]);
-		pcbfree_fun = &pcbArray[i];
 		i++;
-		initPcbsRic(pcbArray, i, pcbfree_fun->p_next);
+		initPcbsRic(pcbArray, i);
 	}
 
 }
@@ -136,7 +136,7 @@ void initPcbs() {
 	static struct pcb_t pcbFree_table[MAXPROC];
 	
 	int i = 0;
-	initPcbsRic(pcbFree_table, i, pcbfree_h);
+	initPcbsRic(pcbFree_table, i);
 }
 
 
@@ -196,7 +196,7 @@ pcb_t *allocPcb() {
 ///Inserisce il PCB puntato da p come fratello del PCB puntato da sib.
 void insertSibling(pcb_t *sib, pcb_t *p) {
 
-	if (sib->p_sib = NULL) {
+	if (sib->p_sib == NULL) {
 		
 		sib->p_sib = p ;
 		return ;
@@ -210,7 +210,7 @@ void insertSibling(pcb_t *sib, pcb_t *p) {
 ///Rimuove il PCB puntato da p se si trova nella posizione successiva del PCB puntato da sib.
 pcb_t *removeSibling(pcb_t *sib, pcb_t *p) {
 
-	if (sib->p_sib = p) {
+	if (sib->p_sib == p) {
 
 		pcb_t *tmp = p ;
 		sib->p_sib = p->p_sib ;
@@ -231,10 +231,10 @@ void insertChild(pcb_t *parent, pcb_t *p) {
 	p->p_parent = parent ;
 
 	//Se parent non  ha nessun figlio
-	if (parent->p_first_child = NULL) {
+	if (parent->p_first_child == NULL) {
 
     	parent->p_first_child = p ;
-    	return;
+    	return ;
 	
 	}
 
@@ -251,7 +251,7 @@ void insertChild(pcb_t *parent, pcb_t *p) {
 pcb_t *removeChild(pcb_t *p) {
 
 	//Se p non ha figli
-	if (p->p_first_child = NULL) {
+	if (p->p_first_child == NULL) {
 
 		return NULL ;
 
@@ -271,14 +271,14 @@ pcb_t *removeChild(pcb_t *p) {
 /// necessariamente il primo figlio del padre).
 pcb_t *outChild(pcb_t *p) {
 
-	if (p->p_parent = NULL) {
+	if (p->p_parent == NULL) {
 
 		return NULL;
 
 	}
 
 	//Se p è il primo figlio
-	if (p->p_parent->p_first_child = p) {
+	if (p->p_parent->p_first_child == p) {
 
 		return removeChild(p->p_parent) ;
 	}

@@ -117,7 +117,7 @@ int main() {
 /*	addokbuf("We are going to test the insertProcQ function...\n");
 
 	/* insert 10 elements using different priorities. one max, one min prio
-	all the others default prio *//*
+	all the others default prio */
 	for (i = 0; i < 10; i++) {
 		q = allocPcb();
 		if ( q == NULL)
@@ -139,27 +139,27 @@ int main() {
 				q->p_priority=DEFAULT_PCB_PRIORITY;
 				break;
 		}
-		/* insert the process in the queue *//*
+		/* insert the process in the queue */
 		insertProcQ(&head, q);
 	}
 
 	addokbuf("Test insertProcQ: OK. Inserted 10 elements \n");
 
 	addokbuf("Checking if the first element has max priority\n");
-	/* Check outProcQ and headProcQ *//*
+	/* Check outProcQ and headProcQ */
 	if (headProcQ(head) != maxproc)
 		adderrbuf("ERROR: headProcQ(qa) failed\n");
 	addokbuf("Done\n");
 
-	/* remove an element *//*
+	/* remove an element */
 	addokbuf("Removing an element. Testing outProcQ\n");
 	q=outProcQ(&head, proc);
 	if ((q == NULL) || (q != proc))
 		adderrbuf("ERROR: outProcQ(&qa, proc) failed to remove the entry\n");
-	freePcb(q); /* return the element to the free list *//*
+	freePcb(q); /* return the element to the free list */
 	addokbuf("Done\n");
 
-	/* Removing the first element from ProcQ *//*
+	/* Removing the first element from ProcQ */
 	addokbuf("Removing the first element. Testing removeProcQ\n");
 	q = removeProcQ(&head);
 	if (q == NULL || q != maxproc)
@@ -168,17 +168,17 @@ int main() {
 	addokbuf("Done\n");
 
 	/* we inserted 10 elements and removed 2. Now let us remove the
-	remaining elements and check if the last one has the min prio *//*
+	remaining elements and check if the last one has the min prio */
 	addokbuf("Testing removeProcQ ...   \n");
 	for (i = 0; i < 7; i++) {
 		if ((q = removeProcQ(&head)) == NULL)
 			adderrbuf("removeProcQ(&qa): unexpected NULL\n");
 		freePcb(q);
-	}*/
+	}
 
 	/* keeping track of the last element */
-	/*q=headProcQ(head);
-	addokbuf("Applying a function to all the elements of the list. Testing forallProcQ\n");
+	//q=headProcQ(head);
+	//addokbuf("Applying a function to all the elements of the list. Testing forallProcQ\n");
 	/* there should be just one element inside the list. i'm going to remove by using the forallProcQ instruction */
 	/*my_counter_process = 0;
 	forallProcQ(head, increment_counter , &my_counter_process);
