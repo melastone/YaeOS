@@ -14,27 +14,30 @@
 # ARM compiler
 CC = arm-none-eabi-gcc
 # Compiler flags
-FLAG_CC = -mcpu=arm7tdmi
+FLAG_CC = -mcpu=arm7tdmi -I $(INCL_UARM) -I $(INCL) -c
 
 # ARM linker
 UL = arm-none-eabi-ld
+# Linker flags
+FLAG_UL = -T $(INCL_UARM)/ldscripts/elf32ltsarm.h.uarmcore.x $(INCL_UARM)/crtso.o $(INCL_UARM)/libuarm.o
 
 # Files paths
-P1 = phase1
-INCL_P1 = h/const.h h/pcb.h h/types.h 
+P1 = /phase1
+INCL = /h
+INCL_UARM = /usr/include/uarm
+INCL_TST = $(INCL)/pcb.h $(INCL)/types.h
+INCL_PCB = $(INCL)/const.h $(INCL_TST)
 
-all: test-pcb
+all: test
 
-test-pcb: arm-none-eabi-ld \
-	-T /usr/include/uarm/ldscripts/elf32ltsarm.h.uarmcore.x \
-	-o test pcb.o test-pcb.o \
-	/usr/include/uarm/crtso.o /usr/include/uarm/libuarm.o
+test: pcb.o test-pcb.o
+	$(UL) $(FLAG_UL) -o $@ pcb.o test-pcb.o
 
 
-pcb.o: $(P1)/pcb.c $(INCL_P1)
-	arm-none-eabi-gcc -mcpu=arm7tdmi -I /usr/include/uarm -I ../h -c pcb.c
+pcb.o: $(P1)/pcb.c $(INCL_PCB)
+	$(CC) $(FLAG_CC) $(P1)/pcb.c
 
-test-pcb.o: 
-	arm-none-eabi-gcc -mcpu=arm7tdmi -I /usr/include/uarm -I ../h -c test-pcb.c
+test-pcb.o: $(P1)/test-pcb.c $(INCL_TST)
+	$(CC) $(FLAG_CC) $(P1)/test-pcb.c
 
 

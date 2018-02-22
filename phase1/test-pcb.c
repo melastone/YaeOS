@@ -38,10 +38,10 @@
 #include <uARMtypes.h>
 #include <libuarm.h>
 
-#include "pcb.h"
-
 #include "const.h"
-//#include "types.h"
+#include "pcb.h"
+#include "asht.h"
+
 
 #define	MAXSEM	MAXPROC
 #define MAXPROC 20
@@ -114,7 +114,7 @@ int main() {
 
 	addokbuf("10 entries were added to the free PCB list\n");
 
-/*	addokbuf("We are going to test the insertProcQ function...\n");
+	addokbuf("We are going to test the insertProcQ function...\n");
 
 	/* insert 10 elements using different priorities. one max, one min prio
 	all the others default prio */
@@ -295,6 +295,116 @@ int main() {
 
 
 	addokbuf("Now starting with test of semaphores\n");
+
+	/* check ASL */
+	initASL();
+	addokbuf("Initializing active semaphore list\n");
+
+	/* check removeBlocked and insertBlocked */
+	addokbuf("Test insertBlocked(): test #1 started\n");
+	for (i = 10; i < MAXSEMD; i++) {
+		procp[i] = allocPcb();
+		if (insertBlocked(&sem[i], procp[i]))
+			adderrbuf("ERROR: insertBlocked() test#1: unexpected TRUE\n");
+	}
+
+	addokbuf("Test insertBlocked(): test #2 started\n");
+	for (i = 0; i < 8; i++) {
+		procp[i] = allocPcb();
+		if (insertBlocked(&sem[i], procp[i]))
+			adderrbuf("ERROR:insertBlocked() test #2: unexpected TRUE\n");
+	}
+
+	for (i = 8; i < 10; i++) {
+		procp[i] = allocPcb();
+		if (insertBlocked(&sem[1], procp[i]))
+			adderrbuf("ERROR:insertBlocked() test #3: unexpected TRUE\n");
+	}
+
+
+	addokbuf("Counting the number of elements inside semaphores\n");
+	/*****************************************************************************************/
+	/*counting the processes inside a semaphore*/
+	/*first i reset to 0*/
+	my_counter_process = 0;
+	/*then i count*/
+	forallBlocked(&sem[1], increment_counter, &my_counter_process);
+	if(my_counter_process != 3)
+		adderrbuf("ERROR forallBlocked, increment_counter. expected 3\n");
+	else
+		addokbuf("I have found 3 elements in sem 1; correct\n");
+
+	/*counting the processes inside a semaphore*/
+	/*first i reset to 0*/
+	my_counter_process = 0;
+	/*then i count*/
+	forallBlocked(&sem[2], increment_counter, &my_counter_process);
+	if(my_counter_process != 1)
+		adderrbuf("ERROR forallBlocked, increment_counter. expected 1\n");
+	else
+		addokbuf("I have found 1 elements in sem 2; correct\n");
+
+	/*adjust*/
+	p = removeBlocked(&sem[1]);
+	if (insertBlocked(&sem[8],p))
+		adderrbuf("ERROR: removeBlocked(): fails to return to free list\n");
+	p = removeBlocked(&sem[1]);
+	if (insertBlocked(&sem[9],p))
+		adderrbuf("ERROR: removeBlocked(): fails to return to free list\n");
+	/*now all the semaphores are used*/
+
+	/*****************************************************************************************/
+
+	addokbuf("Check if the semaphores are returned to the free list\n");
+	/* check if semaphore descriptors are returned to the free list */
+	p = removeBlocked(&sem[11]);
+	if (insertBlocked(&sem[11],p))
+		adderrbuf("ERROR: removeBlocked(): fails to return to free list\n");
+
+	if (insertBlocked(&onesem, procp[9]) == FALSE)
+		adderrbuf("ERROR: insertBlocked(): inserted more than MAXSEMD\n");
+
+	addokbuf("Test removeBlocked(): test started\n");
+	for (i = 10; i< MAXPROC; i++) {
+		q = removeBlocked(&sem[i]);
+		if (q == NULL)
+			adderrbuf("ERROR: removeBlocked(): wouldn't remove\n");
+		if (q != procp[i]) /* different from what expected!*/
+			adderrbuf("ERROR: removeBlocked(): removed wrong element\n");
+	}
+
+	addokbuf("Test blocked done\n");
+
+	if (removeBlocked(&sem[11]) != NULL)
+		adderrbuf("ERROR: removeBlocked(): removed nonexistent blocked proc\n");
+
+	addokbuf("Test insertBlocked() and removeBlocked() ok\n");
+
+
+#if 0
+	/* Creating a 2-layer tree */
+	insertChild(procp[0], procp[1]);
+	insertChild(procp[0], procp[2]);
+	insertChild(procp[2], procp[3]);
+	insertChild(procp[3], procp[4]);
+
+	/* Testing outChildBlocked */
+	outChildBlocked(procp[2]);
+	addokbuf("I called the function outChildBlocked on procp[2]\n");
+
+	/*i'm expecting that the child 2 has no children*/
+	if(removeBlocked(&sem[2])!= NULL)
+		adderrbuf("ERROR: removeBlocked(): nonNULL for a nonexistent queue (2)  ");
+	if(removeBlocked(&sem[3])!= NULL)
+		adderrbuf("ERROR: removeBlocked(): nonNULL for a nonexistent queue (3)  ");
+	if(removeBlocked(&sem[4])!= NULL)
+		adderrbuf("ERROR: removeBlocked(): nonNULL for a nonexistent queue (4)  ");
+
+	if(removeBlocked(&sem[0])== NULL)
+		adderrbuf("ERROR: removeBlocked(): nonNULL for a nonexistent queue (0)  ");
+	if(removeBlocked(&sem[1])== NULL)
+		adderrbuf("ERROR: removeBlocked(): nonNULL for a nonexistent queue (1)  ");
+#endif
 
 	addokbuf("ASL module OK\n");
 	addokbuf("1f u c4n r34d th1s 1t m34ns th4t y430s m19ht w0rk\n");
