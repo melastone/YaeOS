@@ -38,13 +38,13 @@
 #include <uARMtypes.h>
 #include <libuarm.h>
 
-#include "const.h"
 #include "pcb.h"
 #include "asht.h"
+#include "const.h"
+#include "types.h"
 
 
 #define	MAXSEM	MAXPROC
-#define MAXPROC 20
 
 #define MAX_PCB_PRIORITY		10
 #define MIN_PCB_PRIORITY		0
@@ -326,9 +326,9 @@ int main() {
 	/*****************************************************************************************/
 	/*counting the processes inside a semaphore*/
 	/*first i reset to 0*/
-	my_counter_process = 0;
+	//my_counter_process = 0;
 	/*then i count*/
-	forallBlocked(&sem[1], increment_counter, &my_counter_process);
+	/*forallBlocked(&sem[1], increment_counter, &my_counter_process);
 	if(my_counter_process != 3)
 		adderrbuf("ERROR forallBlocked, increment_counter. expected 3\n");
 	else
@@ -336,9 +336,9 @@ int main() {
 
 	/*counting the processes inside a semaphore*/
 	/*first i reset to 0*/
-	my_counter_process = 0;
+	//my_counter_process = 0;
 	/*then i count*/
-	forallBlocked(&sem[2], increment_counter, &my_counter_process);
+	/*forallBlocked(&sem[2], increment_counter, &my_counter_process);
 	if(my_counter_process != 1)
 		adderrbuf("ERROR forallBlocked, increment_counter. expected 1\n");
 	else

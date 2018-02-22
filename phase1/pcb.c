@@ -13,9 +13,8 @@
 
 #include <uARMtypes.h>
 
-#include "const.h"
 #include "pcb.h"
-#include "types.h"
+#include "const.h"
 
 pcb_t *pcbfree_h ; /* testa della lista pcbFree */
 

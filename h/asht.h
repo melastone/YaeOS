@@ -14,6 +14,8 @@
 #ifndef ASL_H
 #define ASL_H
 
+#include "types.h"
+
 /* Sempahore Functions Prototypes */
 void initASL();
 
@@ -31,8 +33,6 @@ void forallBlocked(int *key, void fun(pcb_t *pcb, void *), void *arg);
 
 /* Removes pointed PCB from the queue wich is blocked in*/
 pcb_t* outChildBlocked(pcb_t *p); 
-
-
 
 
 #endif

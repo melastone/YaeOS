@@ -1,5 +1,5 @@
-#ifndef CONST_H
-#define CONST_H
+#ifndef PCB_H
+#define PCB_H
 
 #include "types.h"
 #include "const.h"
@@ -21,7 +21,7 @@ extern void forallProcQ(pcb_t *head, void fun(pcb_t *pcb, void *), void *arg) ;
 
 extern void freePcb (pcb_t *p) ;
 
-extern void initPcbsRic(pcb_t procArray[], int i,pcb_t *pcbfree_fun) ;
+extern void initPcbsRic(pcb_t procArray[], int i) ;
 
 extern void initPcbs() ;
 
