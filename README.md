@@ -1,5 +1,5 @@
 # YaeOS
-Yet Another Educational Operating System
+*Yet Another Educational Operating System*
 
 Progetto di Laboratorio del corso di Sistemi Operativi dell'Università di Bologna per l'anno accademico 2017/2018. 
 
@@ -11,6 +11,7 @@ La fase 1 del progetto consiste nella realizzazione del Livello 2 del Sistema Op
 
 Questo livello implementa le funzionalità relative ai Process Control Blocks, le strutture di dati dei processi. Nello specifico esso contiene due librerie, le quali gestiscono code ed alberi di PCB ed una Active Semaphore Hash Table che si occupa dei processi bloccati sui semafori. 
 
+
 ### PREREQUISITI
 
 Per poter eseguire il software è necessario scaricare l'emulatore [uARM](https://github.com/mellotanica/uARM)
@@ -19,6 +20,7 @@ Per poter eseguire il software è necessario scaricare l'emulatore [uARM](https:
 
 Per decomprimere il progetto, spostarsi nella directory di download ed eseguire i comando 
 '''
+
 $ cd /x/YaeOS.tar.gz
 $ tar -xvf YaeOS.tar.gz
 '''
