@@ -19,6 +19,7 @@ Per poter eseguire il software è necessario scaricare l'emulatore [uARM](https:
 ### INSTALLAZIONE
 
 Per decomprimere il progetto, spostarsi nella directory di download ed eseguire i comando 
+
 '''
 
 $ cd /x/YaeOS.tar.gz
@@ -26,20 +27,28 @@ $ tar -xvf YaeOS.tar.gz
 '''
 
 Per ottenere il file eseguibile spostarsi nella cartella ottenuta dall'estrazione e digitare il comando
+
 '$ make'
 
 Per la pulizia dei file binari generati durante la compilazione eseguire 
+
 '$ make clean'
 
 ### TEST P1
 
 Per effettuare il test della Phase 1, una volta decompresso il file .tar.gz, eseguire il comando 
+
 '$ make test'
+
 seguito da 
+
 '$ make clean'
+
 per generare l'eseguibile chiamato __test__.
 Dopodichè avviare l'emulatore uARM digitando nel terminale
+
 '$ uarm'
+
 Dalla schermata che si aprirà, cliccare sul menù delle impostazioni ed attraverso il pulsante __Browse..__ della sezione __Core File__ selezionare l'eseguibile generato precedentemente.
 Accendere poi la macchina attraverso il pulsante di Power on, aprire uno dei terminali dal menù Terminals ed avviare il test cliccando sul tasto Play. 
 
