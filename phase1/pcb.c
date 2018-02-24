@@ -100,7 +100,10 @@ pcb_t *outProcQ(pcb_t **head, pcb_t *p) {
 
 /// Richiama la funzione fun per ogni elemento della lista puntata da head.
 void forallProcQ(pcb_t *head, void fun(pcb_t *pcb, void *), void *arg) {
-
+	if(head != NULL) {
+		fun(head,arg);
+		forallProcQ(head->p_next, fun, arg);
+	}
 }
 
 

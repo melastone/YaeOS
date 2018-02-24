@@ -177,10 +177,10 @@ int main() {
 	}
 
 	/* keeping track of the last element */
-	//q=headProcQ(head);
+	q=headProcQ(head);
 	//addokbuf("Applying a function to all the elements of the list. Testing forallProcQ\n");
 	/* there should be just one element inside the list. i'm going to remove by using the forallProcQ instruction */
-	/*my_counter_process = 0;
+	my_counter_process = 0;
 	forallProcQ(head, increment_counter , &my_counter_process);
 	if(my_counter_process != 1)
 		adderrbuf("ERROR: forallProcQ(): failed on last entry\n");
@@ -189,7 +189,7 @@ int main() {
 	if (q != minproc)
 		adderrbuf("ERROR: headProcQ(): failed on last entry\n");
 	freePcb(q);
-	addokbuf("Done\n");*/
+	addokbuf("Done\n");
 
 	addokbuf("Let's see if now the queue is empty\n");
 	addokbuf("Test insertProcQ(), removeProcQ(), headProcQ(), forallProcQ(), outProcQ(): OK\n");
@@ -326,9 +326,9 @@ int main() {
 	/*****************************************************************************************/
 	/*counting the processes inside a semaphore*/
 	/*first i reset to 0*/
-	//my_counter_process = 0;
+	my_counter_process = 0;
 	/*then i count*/
-	/*forallBlocked(&sem[1], increment_counter, &my_counter_process);
+	forallBlocked(&sem[1], increment_counter, &my_counter_process);
 	if(my_counter_process != 3)
 		adderrbuf("ERROR forallBlocked, increment_counter. expected 3\n");
 	else
@@ -336,9 +336,9 @@ int main() {
 
 	/*counting the processes inside a semaphore*/
 	/*first i reset to 0*/
-	//my_counter_process = 0;
+	my_counter_process = 0;
 	/*then i count*/
-	/*forallBlocked(&sem[2], increment_counter, &my_counter_process);
+	forallBlocked(&sem[2], increment_counter, &my_counter_process);
 	if(my_counter_process != 1)
 		adderrbuf("ERROR forallBlocked, increment_counter. expected 1\n");
 	else
