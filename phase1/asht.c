@@ -182,9 +182,11 @@ pcb_t* removeBlocked(int *key){
 		// Se è l'unico rimasto in coda, lo rimuovo e riporto il SEMD 
 		// nella lista dei descrittori liberi
 		else {
-				trovato->s_procQ = NULL;
-				semdInsert(&semdFree_h,trovato);
 				semdRemove(&semdhash[index],key);
+				trovato->s_procQ = NULL;
+				trovato->s_next = NULL;
+				semdInsert(&semdFree_h,trovato);
+				
 		}
 
 		return removedPCB;
@@ -225,9 +227,12 @@ pcb_t* outChildBlocked(pcb_t *p){
 			
 			// Si modifica la testa della lista dei processi modificati nel caso sia p l'unico processo
 			if(semdHead == NULL){
+				
+				semdRemove(&semdhash[index],key);
 				trovato->s_procQ = NULL;
+				trovato->s_next = NULL;
 				semdInsert(&semdFree_h,trovato);
-				semdRemove(&semdhash[index], key);
+				
 			}
 
 			return temp;
