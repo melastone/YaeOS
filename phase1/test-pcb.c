@@ -32,17 +32,13 @@
  *
  */
 
-// TODO: eliminare la Ridefinizione della costante MAXPROC
-
 #include <uARMconst.h>
 #include <uARMtypes.h>
 #include <libuarm.h>
 
+#include "const.h"
 #include "pcb.h"
 #include "asht.h"
-#include "const.h"
-#include "types.h"
-
 
 #define	MAXSEM	MAXPROC
 
@@ -52,7 +48,7 @@
 
 int my_counter_process;
 int onesem;
-pcb_t *procp[MAXPROC], *p, *q, *maxproc, *minproc, *proc;
+pcb_t	*procp[MAXPROC], *p, *q, *maxproc, *minproc, *proc;
 int  sem[MAXSEM];
 int onesem;
 pcb_t* head;
@@ -178,7 +174,7 @@ int main() {
 
 	/* keeping track of the last element */
 	q=headProcQ(head);
-	//addokbuf("Applying a function to all the elements of the list. Testing forallProcQ\n");
+	addokbuf("Applying a function to all the elements of the list. Testing forallProcQ\n");
 	/* there should be just one element inside the list. i'm going to remove by using the forallProcQ instruction */
 	my_counter_process = 0;
 	forallProcQ(head, increment_counter , &my_counter_process);
@@ -383,7 +379,7 @@ int main() {
 
 #if 0
 	/* Creating a 2-layer tree */
-	insertChild(procp[0], procp[1]);
+	insertChild(procp[0], procp[1]);s
 	insertChild(procp[0], procp[2]);
 	insertChild(procp[2], procp[3]);
 	insertChild(procp[3], procp[4]);

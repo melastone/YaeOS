@@ -30,7 +30,7 @@ INCL_P1 = $(INCL)/types.h $(INCL)/const.h
 INCL_PCB = $(INCL)/pcb.h $(INCL_P1)
 INCL_ASHT = $(INCL)/pcb.h $(INCL)/asht.h $(INCL_P1)
 
-all: YaeOS
+all: test
 
 test: pcb.o asht.o test-pcb.o
 	$(UL) $(FLAG_UL) -o $@ pcb.o asht.o test-pcb.o
