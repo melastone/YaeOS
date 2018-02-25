@@ -21,10 +21,11 @@ Per poter eseguire il software è necessario scaricare l'emulatore [uARM](https:
 Per decomprimere il progetto, spostarsi nella directory di download ed eseguire i comando 
 
 ```
-$ cd /x/YaeOS.tar.gz
+$ cd /x
 $ tar -xvf YaeOS.tar.gz
 ```
 
+dove x va sostituito con il percorso del file YaeOS.tar.gz .
 Per ottenere il file eseguibile spostarsi nella cartella ottenuta dall'estrazione e digitare il comando
 
 `$ make`
