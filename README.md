@@ -22,7 +22,7 @@ Per decomprimere il progetto, spostarsi nella directory di download ed eseguire 
 
 ```
 $ cd /x
-$ tar -xvf YaeOS.tar.gz
+$ tar -zxvf YaeOS.tar.gz
 ```
 
 dove x va sostituito con il percorso del file YaeOS.tar.gz .
