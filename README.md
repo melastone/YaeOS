@@ -62,5 +62,5 @@ Accendere poi la macchina attraverso il pulsante di Power on, aprire uno dei ter
 
 ## INFORMAZIONI E LINK UTILI
 
--[microARM: an ARM emulator](http://mellotanica.github.io/uARM/)
--[Specifiche per lo svolgimento del progetto](http://www.cs.unibo.it/~renzo/so/progetto.shtml) del professore Renzo Davoli
+- [microARM: an ARM emulator](http://mellotanica.github.io/uARM/)
+- [Specifiche per lo svolgimento del progetto](http://www.cs.unibo.it/~renzo/so/progetto.shtml) del professore Renzo Davoli
