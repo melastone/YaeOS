@@ -16,6 +16,11 @@
 
 #include <uARMtypes.h>
 
+typedef unsigned int cputime_t;
+
+
+
+
 typedef struct pcb_t {
 
 	struct pcb_t *p_next;
