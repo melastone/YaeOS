@@ -16,10 +16,10 @@
 void scheduler() {
 
 	// There is no executing process 
-	if (!curProc) {
+	if (curProc == NULL) {
 
 		// Checking the readyQueue status
-		if (readyQueue) {
+		if (readyQueue == NULL) {
 			/* No More processes */
 			if (processCount == 0) HALT();
 			/* Processes Waiting for I/O */
@@ -27,15 +27,18 @@ void scheduler() {
 				/* Enable all interrupts to be unmasked */
 				setSTATUS(STATUS_ALL_INT_ENABLE(getSTATUS()));
 				WAIT();
+			} 
+			/* Deadlock Detection (processCount > 0 && softBlockedCount == 0) */
+			else {
+				PANIC();
 			}
-			/* Deadlock Detection */
-			if (processCount > 0 && softBlockedCount == 0) PANIC();
+			
 
 		}
 
 		// Loading the first process in readyQueue 
 		// (which is also the one with higher priority)
-		if (!(curProc = removeProcQ(&readyQueue))) PANIC();
+		curProc = removeProcQ(&readyQueue);
 
 		//The PCB was taken successfully from the Queue
 
