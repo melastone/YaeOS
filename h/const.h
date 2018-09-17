@@ -1,5 +1,7 @@
 //
-//  const.h
+//  CONST.h
+//  File contenente le definizioni delle costanti globali
+//
 //  Yet Another Educational Operating System Phase 1
 //
 //  Creato il 28/01/2018

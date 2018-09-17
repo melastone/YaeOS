@@ -1,3 +1,18 @@
+//
+//  PCB.h
+//  Process Control Blocks Header File
+//
+//  Yet Another Educational Operating System Phase 1
+//
+//  Creato il 28/01/2018
+//
+//  Gruppo 13:
+//  Daniel Veroli
+//  Lorenzo Turrini
+//  Lorenzo Poluzzi
+//  Melania Ghelli
+//
+
 #ifndef PCB_H
 #define PCB_H
 

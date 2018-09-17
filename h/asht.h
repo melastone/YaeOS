@@ -1,15 +1,17 @@
-/*
- *	ASL.H
- *	Active Semaphore Hash Table Header File
- *
- *  Gruppo 13:
- *  Daniel Veroli
- *  Lorenzo Turrini
- *  Lorenzo Poluzzi
- *  Melania Ghelli
- *
- *
- */
+//
+//	ASHT.h
+//	Active Semaphore Hash Table Header File
+//
+//  Yet Another Educational Operating System Phase 1
+//
+//  Creato il 28/01/2018
+//
+//  Gruppo 13:
+//  Daniel Veroli
+//  Lorenzo Turrini
+//  Lorenzo Poluzzi
+//  Melania Ghelli
+//
 
 #ifndef ASL_H
 #define ASL_H

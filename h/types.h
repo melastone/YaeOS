@@ -1,5 +1,7 @@
 //
-//  types.h
+//  TYPES.h
+//  File contente le definizioni delle strutture di dati globali
+//
 //  Yet Another Educational Operating System Phase 1
 //
 //  Creato il 28/01/2018

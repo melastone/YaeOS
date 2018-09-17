@@ -1,8 +1,8 @@
 //  
 //	ASHT.c
-//  Yet Another Educational Operating System Phase 1
-//
 //  Active Semaphore Hash Table Implementation File
+//
+//  Yet Another Educational Operating System Phase 1
 //
 //  Creato il 15/02/2018
 //
