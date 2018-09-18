@@ -18,4 +18,9 @@
 #define MAXSEMD MAXPROC
 #define ASHDSIZE 8
 
+/// Tempi di Scheduling costanti 
+#define TIME_SLICE 3000  
+#define TICK_SYS7 100000
+#define TICK_PRIORITY 10000
+
 #endif
