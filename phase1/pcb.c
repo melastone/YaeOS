@@ -30,8 +30,14 @@ void insertProcQ(pcb_t **head, pcb_t *p) {
 	
 	// Se procQ è vuota
 	if((*head) == NULL) (*head) = p;
+
+	// Se p ha priorità massima viene inserito in testa
+	else if (p->p_priority > (*head)->p_priority) {
+		p->p_next = (*head);
+		(*head) = p;
+	}
 	
-	// Se procQ ha un solo elemento
+	// Se procQ ha un solo elemento lo inserisco prima o dopo questo
 	else if((*head)->p_next == NULL) {
 		
 		if((*head)->p_priority < p->p_priority) {
@@ -43,6 +49,7 @@ void insertProcQ(pcb_t **head, pcb_t *p) {
 		}
 
 	} 
+
 	else {
 		
 		insertProcQ(&(*head)->p_next, p);
