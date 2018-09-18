@@ -101,10 +101,14 @@ int SYSCALL (CREATEPROCESS, state_t *statep, int priority, void **cpid) {
 int SYSCALL (TERMINATEPROCESS, void * pid)
 
 /// SYS3
-// Realizza l'operazione di P su un semaforo. Il valore del semaforo è memorizzato nella
-// variabile di tipo intero passata per indirizzo. L’indirizzo della variabile agisce da
-// indentificatore del semaforo.
-void SYSCALL (SEMP, int *semaddr)
+// Realizza l'operazione di P su un semaforo, ovvero di attesa del rilascio di una risorsa.
+// Il valore del semaforo è memorizzato nella variabile di tipo intero passata per indirizzo.
+// L’indirizzo della variabile agisce da identificatore del semaforo.
+void SYSCALL (SEMP, int *semaddr) {
+
+	
+	
+}
 
 /// SYS4
 // Realizza l'operazione di V su un semaforo. Il valore del semaforo è memorizzato nella
@@ -149,7 +153,24 @@ unsigned int SYSCALL (IODEVOP, unsigned int command, unsigned int *comm_device_r
 /// SYS9
 // Restituisce il pid del processo stesso e del processo genitore. Se il campo pid o ppid 
 // è NULL il valore corrispondente non viene restituito. Per il processo radice *ppid è NULL.
-void SYSCALL(GETPIDS, void **pid, void **ppid)
+void SYSCALL(GETPIDS, void **pid, void **ppid) {
+
+	if ((pid) && (ppid)) {
+		
+		pid = &curProc ;
+
+		// Se il processo è radice
+		if (!(curProc->p_parent)) {
+
+			ppid=(curProc->p_parent) ;
+			return ;
+		}
+
+		ppid = &(curProc->p_parent) ;
+		return ;
+
+	}
+}
 
 /// SYS10
 // Aspetta la terminazione di un processo figlio.
