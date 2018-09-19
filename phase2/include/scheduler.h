@@ -1,4 +1,6 @@
 /*
+ *	Yet Another Educational Operating System Phase 2
+ *	------------------------------------------------
  *	SCHEDULER.H
  *	Scheduling Policy and Deadlock Detection Header File
  *
@@ -17,6 +19,6 @@
 #include <init.h>
 
 void scheduler();
-void 
+void readyQueueAging();
 
 #endif

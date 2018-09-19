@@ -1,4 +1,6 @@
 /*
+ *	Yet Another Educational Operating System Phase 2
+ *	------------------------------------------------
  *	INIT.H
  *	Kernel Entry Point Header File
  *
