@@ -1,15 +1,17 @@
-//
-//  interrupts.h
-//  Yet Another Educational Operating System Phase 2
-//
-//  Creato il 29/08/2018
-//
-//  Gruppo 13:
-//  Daniel Veroli
-//  Lorenzo Turrini
-//  Lorenzo Poluzzi
-//  Melania Ghelli
-//
+/*
+ *	Yet Another Educational Operating System Phase 2
+ *	------------------------------------------------
+ *	INTERRUPTS.H
+ *	
+ *
+ *
+ *	Gruppo 13:
+ *	Daniel Veroli
+ *  Melania Ghelli
+ *	Lorenzo Turrini
+ *	Lorenzo Poluzzi
+ *
+ */
 
 #ifndef INTERRUPTS_H
 #define INTERRUPTS_H

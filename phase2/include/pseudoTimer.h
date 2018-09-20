@@ -1,15 +1,18 @@
-//
-//  pseudoTimer.h
-//  Yet Another Educational Operating System Phase 2
-//
-//  Creato il 29/08/2018
-//
-//  Gruppo 13:
-//  Daniel Veroli
-//  Lorenzo Turrini
-//  Lorenzo Poluzzi
-//  Melania Ghelli
-//
+/*
+ *	Yet Another Educational Operating System Phase 2
+ *	------------------------------------------------
+ *	PSEUDOTIMER.H
+ *	
+ *
+ *
+ *	Gruppo 13:
+ *	Daniel Veroli
+ *  Melania Ghelli
+ *	Lorenzo Turrini
+ *	Lorenzo Poluzzi
+ *
+ */
+
 
 #ifndef PSEUDOTIMER_H
 #define PSEUDOTIMER_H

@@ -17,12 +17,21 @@
 #ifndef EXCEPTION_H
 #define EXCEPTION_H
 
+/***************************************************************
+*                           HANDLERS                           *
+***************************************************************/
 
 void sysHandler();
 
 void pgmHandler();
 
 void tlbHandler();
+
+
+/***************************************************************
+*                      AUXILIARY FUNCTION                      *
+***************************************************************/
+
 
 void saveCurState(state_t *state, state_t *newState);
 

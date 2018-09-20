@@ -1,6 +1,8 @@
 /*
- *	SCHEDULER.C
- *	Scheduling Policy and Deadlock Implementation Header File
+ *	Yet Another Educational Operating System Phase 2
+ *	------------------------------------------------
+ *	EXCEPTION.C
+ *	Scheduling Policy and Deadlock Detection Implementation File
  *
  *
  *	Gruppo 13:

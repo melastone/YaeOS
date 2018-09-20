@@ -14,7 +14,7 @@
  */
 
 
-#include <../include/exception.h>
+#include <exception.h>
 
 
 state_t *tlb_old = (state_t*)TLB_OLDAREA;
