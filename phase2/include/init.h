@@ -44,6 +44,7 @@ unsigned int softBlockCounter;	   // Numero dei processi in attesa di operazioni
 pcb_t *readyQueue;                 // Puntatore alla coda dei processi Ready
 pcb_t *curProc;					   // Puntatore al processo corrente
 
+int semDevices[MAX_DEVICES];		
 
 /***************************************************************
 *                        FUNZIONI AUSILIARIE                   *
