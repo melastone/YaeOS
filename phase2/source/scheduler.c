@@ -74,7 +74,7 @@ void readyQueueAging() {
 		pcb_t *parser = readyQueue;
 
 		// Avoiding process which already have max_priority
-		while (parser->p_priority == MAX_PRIORITY && parser->p_next != NULL) parser = parser->p_next;
+		while (parser->p_priority == MAXPRIO && parser->p_next != NULL) parser = parser->p_next;
 		// Increasing priority on other processes
 		while (parser->p_next != NULL) parser->p_priority++;
 
