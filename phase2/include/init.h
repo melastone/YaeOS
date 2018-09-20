@@ -50,7 +50,6 @@ pcb_t *curProc;					   // Puntatore al processo corrente
 ***************************************************************/
 
 
-
 void initArea(memaddr area, memaddr handler);
 
 
