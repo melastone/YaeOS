@@ -88,8 +88,10 @@ void readyQueueAging() {
 		// Scorro i processi che hanno già priorità massima
 		while (parser->p_priority == MAXPRIO && parser->p_next != NULL) parser = parser->p_next;
 		// Aumento la priorità degli altri processi
-		while (parser->p_next != NULL) parser->p_priority++;
-
+		while (parser->p_next != NULL) {
+			parser->p_priority++;
+			parser = parser->p_next;
+		}
 	}
 
 }
