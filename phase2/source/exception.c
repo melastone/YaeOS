@@ -21,6 +21,11 @@ state_t *tlb_old = (state_t*)TLB_OLDAREA;
 state_t *pgmtrap_old = (state_t*)PGMTRAP_OLDAREA;
 state_t *sysbp_old = (state_t*)SYSBK_OLDAREA;
 
+
+/***************************************************************
+*                           HANDLERS                           *
+***************************************************************/
+
 void sysHandler() {
 
 	//siamo nel caso in cui viene chiamata una SYSCALL, ora andiamo a vedere in che mode siamo
@@ -112,6 +117,14 @@ void tlbHandler() {
 		terminateProcess(NULL);
 	}
 }
+
+
+
+
+/***************************************************************
+*                      FUNZIONI AUSILIARIE                     *
+***************************************************************/
+
 
 void saveCurState(state_t *state, state_t *newState) {
 	newState->a1 = state->a1;
