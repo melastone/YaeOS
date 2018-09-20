@@ -20,6 +20,8 @@
 #define MAXSEMD MAXPROC
 #define ASHDSIZE 8
 
+#define memaddr unsigned int
+
 #define CREATEPROCESS    1
 #define TERMINATEPROCESS 2
 #define SEMP             3
