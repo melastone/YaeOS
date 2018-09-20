@@ -39,4 +39,13 @@ typedef struct semd_t {
 	
 } semd_t;
 
+typedef unsigned int uint;
+
+/* Struttura per gli Interrupt Acknowledgements */
+typedef enum ack_type {
+	ACK_GEN_DEVICE,
+	ACK_TERM_TRANSMIT,
+	ACK_TERM_RECIVE
+} ack_type;
+
 #endif

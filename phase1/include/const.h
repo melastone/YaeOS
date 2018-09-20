@@ -33,4 +33,10 @@
 #define GETPIDS          9
 #define WAITCHILD       10
 
+/// Tempi di Scheduling costanti 
+#define TIME_SLICE 3000  
+#define TICK_SYS7 100000
+#define TICK_PRIORITY 10000
+
+
 #endif
