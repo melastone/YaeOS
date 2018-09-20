@@ -17,7 +17,10 @@
 #include <exception.h>
 
 
-
+/*
+	Conversione area di memoria definite nella libreria uArm in state per comodità di accesso ai registri
+	a1, a2, a3, a4 in cui saranno contenuti i parametri che poi verranno passati alle SYSCALL
+*/
 state_t *tlb_old = (state_t*)TLB_OLDAREA;
 state_t *pgmtrap_old = (state_t*)PGMTRAP_OLDAREA;
 state_t *sysbp_old = (state_t*)SYSBK_OLDAREA;
@@ -27,9 +30,15 @@ state_t *sysbp_old = (state_t*)SYSBK_OLDAREA;
 *                           HANDLERS                           *
 ***************************************************************/
 
+/* 
+	Handler per le SYSCALL. Intercetta le interrupt generate dalle SYSCALL e accertatosi
+	di essere in KERNEL MODE, esegue la system correlativa al valore salvato nel registro di stato a1.
+	In caso contrario richiama il Program Trap Handler che si occuperà di inviare la richiesta
+	a un gestione superiore se presente o eventualmente terminare l'esecuzione del processo.
+*/
 void sysHandler() {
 
-	//siamo nel caso in cui viene chiamata una SYSCALL, ora andiamo a vedere in che mode siamo
+	//controllo che sia stata richiesta l'esecuzione di una SYSCALL e che questa sia compresa tra la 1 e la 10
 	if (CAUSE_EXCCODE_GET(sysbp_old->CP15_Cause) == EXC_SYSCALL && sysbp_old->a1 >= 1 && sysbp_old->a1 <= 10) {
 
 		//controllo se siamo in USER MODE
@@ -43,16 +52,16 @@ void sysHandler() {
 		//ricordiamo & bit a bit
 		else if(curProc->p_s.cpsr == STATUS_SYS_MODE) {
 			saveCurState(sysbp_old, curProc->p_s);
-			//chiamare handler per SYSCALL
+			//creo variabili relative ai registri di stato a1 ... a4
 			uint a1 = sysbp_old->a1;
 			uint a2 = sysbp_old->a2;
 			uint a3 = sysbp_old->a3;
 			uint a4 = sysbp_old->a4;
 
-			// Invoke the appropriate SYSCALL by analyzing its value contiained in A1 register
+			// Eseguo la SYSCALL correlativa al valore salvato nel registro di stato a1. 
 			if (sysbp_old->CP15_Cause == EXC_SYSCALL) {
 				switch (a1) {
-					//fare casi SYSCALL
+					//casi SYSCALL
 					case CREATEPROCESS:
 						createProcess(a2, a3, a4);
 						break;
@@ -92,10 +101,16 @@ void sysHandler() {
 		}
 
 	} else {
+		//controllo che sia stata richiesta l'esecuzione di una SYSCALL e che questa sia maggiore di 11
 		if(CAUSE_EXCCODE_GET(sysbp_old->CP15_Cause) == EXC_SYSCALL && sysbp_old->a1 >= 11){
+			/*
+				controllo che venga specificato un tipo handler nel registro di stato a2,
+				in caso affermativo viene richiamata la SYSCALL 5 specificando il tipo di Handler
+			*/
 			if(sysbp_old->a2 >= 0 && sysbp_old->a2 <= 2){
 				specHdl(sysbp_old->a2, SYSBK_OLDAREA, (state_t*)SYSBK_NEWAREA);
 			} else {
+				//in caso negativo viene terminato il processo
 				terminateProcess(NULL);
 			}
 		}
@@ -103,6 +118,11 @@ void sysHandler() {
 
 }
 
+/*
+	Handler per Program Trap Exception. Esegue il controllo sul registro di stato a2 per verificare che il valore
+	contenuto coincida con il reale valore di gestore relativo. In caso negativo termina il processo
+	tramite SYSCALL 2.
+*/
 void pgmHandler(){
 	if(sysbp_old->a2 == 2){
 		spechdl(sysbp_old->a2, PGMTRAP_OLDAREA, (state_t*)PGMTRAP_NEWAREA);
@@ -111,6 +131,12 @@ void pgmHandler(){
 	}
 }
 
+
+/*
+	Handler per TLB Exception. Esegue il controllo sul registro di stato a2 per verificare che il valore
+	contenuto coincida con il reale valore di gestore relativo. In caso negativo termina il processo
+	tramite SYSCALL 2.
+*/
 void tlbHandler() {
 	if(sysbp_old->a2 == 1){
 		spechdl(sysbp_old->a2, TLB_OLDAREA, (state_t*)TLB_NEWAREA);
@@ -121,12 +147,13 @@ void tlbHandler() {
 
 
 
-
 /***************************************************************
 *                      FUNZIONI AUSILIARIE                     *
 ***************************************************************/
 
-
+/*
+	funzione ausiliare che si occupa di salvare lo stato dei registri "state" in "newState".
+*/
 void saveCurState(state_t *state, state_t *newState) {
 	newState->a1 = state->a1;
 	newState->a2 = state->a2;
