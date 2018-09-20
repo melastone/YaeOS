@@ -17,20 +17,20 @@
 
 void scheduler() {
 
-	// There is no executing process 
+	// Controllo l'eventuale presenza di processi in esecuzione 
 	if (curProc == NULL) {
 
-		// Checking the readyQueue status
+		// Controllo lo stato della readyQueue
 		if (readyQueue == NULL) {
-			/* No More processes */
+			/* Non ci sono più processi */
 			if (processCount == 0) HALT();
-			/* Processes Waiting for I/O */
+			/* Processi in atesa di I/O */
 			if (processCount > 0 && softBlockedCount > 0) {
-				/* Enable all interrupts to be unmasked */
+				/* Riabilito tutti gli interrupt */ 
 				setSTATUS(STATUS_ALL_INT_ENABLE(getSTATUS()));
 				WAIT();
 			} 
-			/* Deadlock Detection (processCount > 0 && softBlockedCount == 0) */
+			/* Controllo possibile situazione di Deadlock (processCount > 0 && softBlockedCount == 0) */
 			else {
 				PANIC();
 			}
@@ -38,17 +38,17 @@ void scheduler() {
 
 		}
 
-		// Loading the first process in readyQueue 
-		// (which is also the one with higher priority)
+		// Carico il primo processo dalla readyQueue 
+		// (che coincide con quello a priorità più alta)
 		curProc = removeProcQ(&readyQueue);
 
-		//The PCB was taken successfully from the Queue
+
 
 		// TIME MANAGMENT ( da implementare )
 
 
 	}
-	// There is a running process 
+	// Esiste un processo attualmente in esecuzione
 	else {
 
 
@@ -57,8 +57,8 @@ void scheduler() {
 	}
 
 
-
-	//Loading the state of currentProcess
+	//CONTEXT SWITCH
+	//Carico lo stato del processo corrente nei registri
 	LDST(&(curProc->p_s));
 
 
@@ -68,14 +68,14 @@ void scheduler() {
 void readyQueueAging() {
 
 
-	// Checking the readyQueue status
+	// Controllo lo stato della readyQueue
 	if (readyQueue) {
-		// Init support variable
+		// Variabile di supporto
 		pcb_t *parser = readyQueue;
 
-		// Avoiding process which already have max_priority
+		// Scorro i processi che hanno già priorità massima
 		while (parser->p_priority == MAXPRIO && parser->p_next != NULL) parser = parser->p_next;
-		// Increasing priority on other processes
+		// Aumento la priorità degli altri processi
 		while (parser->p_next != NULL) parser->p_priority++;
 
 	}
