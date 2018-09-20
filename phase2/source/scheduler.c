@@ -13,7 +13,14 @@
  *
  */
 
+
 #include <scheduler.h>
+
+
+
+/***************************************************************
+*                           SCHEDULER                          *
+***************************************************************/
 
 void scheduler() {
 
@@ -23,9 +30,9 @@ void scheduler() {
 		// Controllo lo stato della readyQueue
 		if (readyQueue == NULL) {
 			/* Non ci sono più processi */
-			if (processCount == 0) HALT();
+			if (processCounter == 0) HALT();
 			/* Processi in atesa di I/O */
-			if (processCount > 0 && softBlockedCount > 0) {
+			if (processCounter > 0 && softBlockedCounter > 0) {
 				/* Riabilito tutti gli interrupt */ 
 				setSTATUS(STATUS_ALL_INT_ENABLE(getSTATUS()));
 				WAIT();
@@ -63,6 +70,11 @@ void scheduler() {
 
 
 }
+
+
+/***************************************************************
+*                           AGING                              *
+***************************************************************/
 
 
 void readyQueueAging() {

@@ -24,19 +24,36 @@
 #include <libuarm.h>
 
 
+#define memaddr unsigned int
+
+
+/***************************************************************
+*                        FUNZIONI ESTERNE                      *
+***************************************************************/
+
+EXTERN void test();
+
+
+/***************************************************************
+*                        VARIABILI KERNEL                      *
+***************************************************************/
+
+
+unsigned int processCounter;       // Numero dei processi totali nel sistema
+unsigned int softBlockCounter;	   // Numero dei processi in attesa di operazioni di I/O
+pcb_t *readyQueue;                 // Puntatore alla coda dei processi Ready
+pcb_t *curProc;					   // Puntatore al processo corrente
+
+
+/***************************************************************
+*                        FUNZIONI AUSILIARIE                   *
+***************************************************************/
 
 
 
-
-/* Data Structures used for execution */
-
-unsigned int processCount;         // Number of total processes
-unsigned int softBlockCount;	   // Number of processes waiting for I/O operations
-pcb_t *readyQueue;                 // Ready queue of processes
-pcb_t *curProc;					   // Current process executing
+void initArea(memaddr area, memaddr handler);
 
 
-/* Data Structures for Time Management */
 
 
 
