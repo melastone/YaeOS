@@ -31,7 +31,7 @@
 #define WAITCLOCK        7
 #define IODEVOP          8
 #define GETPIDS          9
-#define WAITCHILD       10
+#define WAITCHLD        10
 
 /// Tempi di Scheduling costanti 
 #define TIME_SLICE 3000  
