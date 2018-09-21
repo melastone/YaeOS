@@ -14,7 +14,16 @@
  */
 
 
-#include <init.h>
+#include <uARMconst.h>
+#include "init.h"
+
+
+unsigned int processCounter;       // Numero dei processi totali nel sistema
+unsigned int softBlockCounter;	   // Numero dei processi in attesa di operazioni di I/O
+pcb_t *readyQueue;                 // Puntatore alla coda dei processi Ready
+pcb_t *curProc;					   // Puntatore al processo corrente
+
+int semDevices[MAX_DEVICES]; 	// Array dei semafori attivi
 
 
 /***************************************************************

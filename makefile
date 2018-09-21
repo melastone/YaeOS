@@ -24,7 +24,7 @@ FLAG_UL = -T $(INCL_UARM)/ldscripts/elf32ltsarm.h.uarmcore.x $(INCL_UARM)/crtso.
 
 # Files paths
 P1 = phase1
-INCL = h
+INCL = phase1/include
 INCL_UARM = /usr/include/uarm
 INCL_P1 = $(INCL)/types.h $(INCL)/const.h
 INCL_PCB = $(INCL)/pcb.h $(INCL_P1)

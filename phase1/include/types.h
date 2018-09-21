@@ -18,6 +18,9 @@
 
 #include <uARMtypes.h>
 
+unsigned int cputime_t ;
+unsigned int memaddr ;
+
 typedef struct pcb_t {
 
 	struct pcb_t *p_next;
@@ -29,6 +32,11 @@ typedef struct pcb_t {
 	state_t p_s;   /* processor state */
 	int p_priority;
 	int *p_semKey;
+
+	cputime_t kernel_mode;
+	cputime_t global_time;
+    cputime_t remaining;
+    
 } pcb_t;
 
 

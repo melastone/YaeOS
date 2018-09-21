@@ -13,10 +13,9 @@
  *
  */
 
-
-#include <exception.h>
-
-
+#include <uARMtypes.h>
+#include "exception.h"
+#include "syscall.h"
 
 state_t *tlb_old = (state_t*)TLB_OLDAREA;
 state_t *pgmtrap_old = (state_t*)PGMTRAP_OLDAREA;
@@ -49,12 +48,12 @@ void sysHandler() {
 			uint a3 = sysbp_old->a3;
 			uint a4 = sysbp_old->a4;
 
-			// Invoke the appropriate SYSCALL by analyzing its value contiained in A1 register
+			// chiama la corretta syscall analizzando il valore contenuto in a1
 			if (sysbp_old->CP15_Cause == EXC_SYSCALL) {
 				switch (a1) {
 					//fare casi SYSCALL
 					case CREATEPROCESS:
-						createProcess(a2, a3, a4);
+						createProcess((state_t*)a2, a3, a4);
 						break;
 					case TERMINATEPROCESS:
 						terminateProcess(a2);
@@ -126,7 +125,8 @@ void tlbHandler() {
 *                      FUNZIONI AUSILIARIE                     *
 ***************************************************************/
 
-
+// Realizza una copia di tutti i campi di una struttura state_t, a partire dall'attuale 
+// state nella nuova newState
 void saveCurState(state_t *state, state_t *newState) {
 	newState->a1 = state->a1;
 	newState->a2 = state->a2;
