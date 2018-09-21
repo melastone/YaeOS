@@ -126,8 +126,9 @@ void sysHandler() {
 	tramite SYSCALL 2.
 */
 void pgmHandler(){
-	if(sysbp_old->a2 == 2){
-		spechdl(sysbp_old->a2, PGMTRAP_OLDAREA, (state_t*)PGMTRAP_NEWAREA);
+	if(curProc->pgm_old != NULL) {
+		saveCurState(curProc->pgm_old, pgmtrap_old);
+		LDST(curProc->pgm_new);
 	} else {
 		terminateProcess(NULL);
 	}
@@ -141,8 +142,9 @@ void pgmHandler(){
 	tramite SYSCALL 2.
 */
 void tlbHandler() {
-	if(sysbp_old->a2 == 1){
-		spechdl(sysbp_old->a2, TLB_OLDAREA, (state_t*)TLB_NEWAREA);
+	if(curProc->tlb_old != NULL) {
+		saveCurState(curProc->tlb_old, tlb_old);
+		LDST(curProc->tlb_new);
 	} else {
 		terminateProcess(NULL);
 	}
