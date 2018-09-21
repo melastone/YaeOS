@@ -26,6 +26,12 @@ typedef struct pcb_t {
 	struct pcb_t *p_first_child;
 	struct pcb_t *p_sib;
 	
+	state_t tlb_old;
+	state_t tlb_new;
+	state_t pgm_old;
+	state_t pgm_new;
+	state_t sys_old;
+	state_t sys_new;
 	state_t p_s;   /* processor state */
 	int p_priority;
 	int *p_semKey;
