@@ -52,6 +52,7 @@ void scheduler() {
 
 
 		// TIME MANAGMENT ( da implementare )
+		// Settare curProc->activation_time a getTODLO() ;
 
 
 	}

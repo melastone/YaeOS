@@ -18,10 +18,11 @@
 
 #include <uARMconst.h>
 #include <uARMtypes.h>
-#include <pcb.h>
-#include <asht.h>
-#include <types.n>
 #include <libuarm.h>
+#include "pcb.h"
+#include "asht.h"
+#include "types.n"
+
 
 
 
@@ -31,23 +32,10 @@
 
 EXTERN void test();
 
-
-
 /***************************************************************
 *                        FUNZIONI AUSILIARIE                   *
 ***************************************************************/
 
-
 void initArea(memaddr area, memaddr handler);
-
-
-
-
-
-
-
-
-
-
 
 #endif

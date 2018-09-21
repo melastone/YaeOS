@@ -33,9 +33,9 @@ typedef struct pcb_t {
 	int p_priority;
 	int *p_semKey;
 
-	cputime_t kernel_mode;
-	cputime_t global_time;
-    cputime_t remaining;
+	cputime_t kernel_time ;
+	cputime_t global_time ;
+	cputime_t activation_time ;
     
 } pcb_t;
 
