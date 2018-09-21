@@ -16,6 +16,8 @@
 
 #include <uARMtypes.h>
 
+#define cpu_t unsigned int
+
 typedef struct pcb_t {
 
 	struct pcb_t *p_next;
@@ -27,6 +29,22 @@ typedef struct pcb_t {
 	state_t p_s;   /* processor state */
 	int p_priority;
 	int *p_semKey;
+
+
+	// Indirizzi per le aree NEW e OLD relative alle eccezioni lanciate dal processo
+	state_t* old_sysBp;
+	state_t* new_sysBp;
+	state_t* old_tlb;
+	state_t* new_tlb;
+	state_t* old_pgm;
+	state_t* new_pgm;
+
+	// Variabili per la gestione del timing
+
+	cpu_t time;
+	cpu_t kernelTime;
+	cpu_t userTime;
+
 } pcb_t;
 
 
