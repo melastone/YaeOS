@@ -26,8 +26,11 @@ int main() {
 	
 	//-------------------------------------------------------
 
-	// Inizializzazione delle aree NEW per Interrupt e Trap
-	// nel frame riservato della ROM
+	/*  
+		Inizializzazione delle aree NEW con gli indirizzi che puntano
+		alle routine di gestione delle Trap 
+	*/
+	
 	initArea(INT_NEWAREA,(memaddr)intHandler);
 	initArea(TLB_NEWAREA,(memaddr)tlbHandler);
 	initArea(PGMTRAP_NEWAREA,(memaddr)pgmHandler);
@@ -60,7 +63,7 @@ int main() {
 	(firstProcess->p_s).cpsr &= STATUS_CLEAR_MODE;
 	(firstProcess->p_s).cpsr |= STATUS_SYS_MODE;
 	// Set Stack Pointer
-	(firstProcess->p_s).sp = RAMTOP - FRAMESIZE;
+	(firstProcess->p_s).sp = RAM_TOP - FRAMESIZE;
 	// Inizializzazione del Program Counter all'indirizzo del test
 	(firstProcess->p_s).pc = (memaddr)test;
 
