@@ -126,7 +126,7 @@ void sysHandler() {
 	tramite SYSCALL 2.
 */
 void pgmHandler(){
-	if(curProc->pgm_old != NULL) {
+	if(curProc->pgm_old != NULL && curProc->pgm_new != NULL) {
 		saveCurState(curProc->pgm_old, pgmtrap_old);
 		LDST(curProc->pgm_new);
 	} else {
@@ -142,7 +142,7 @@ void pgmHandler(){
 	tramite SYSCALL 2.
 */
 void tlbHandler() {
-	if(curProc->tlb_old != NULL) {
+	if(curProc->tlb_old != NULL && curProc->tlb_new != NULL) {
 		saveCurState(curProc->tlb_old, tlb_old);
 		LDST(curProc->tlb_new);
 	} else {
