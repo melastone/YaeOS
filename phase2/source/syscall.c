@@ -16,7 +16,7 @@
 //        fare il controllo sulla terminateRec x i processi bloccati sui semafori
 //        aggiornare i tempi all'interno della semP
 //        assicurarsi che le var cputime_t di ogni pcb vengano aggiornate correttamente
-//        qual è la key del semaforo del timer???
+//        quando faccio la P sul sem del timer, chi è a fare poi la V?
 
 
 #include <uARMtypes.h>
@@ -84,6 +84,8 @@ int createProcess (state_t *statep, int priority, void **cpid) {
 		insertChild(curProc, newP) ;
 		insertProcQ(&readyQueue, newP) ;
 
+		newP->activation_time = getTODLO() ;
+
 		cpid = &(newP) ;
 		return 0 ;
 
@@ -127,12 +129,13 @@ void semP (int *semaddr) {
 	if ((*semAddr) < 0) {
 
 		// TODO
-		updateTime();
+		curProc->kernel_time += getTODLO() - (curProc->p_s.TODLow) ;
+
 
 		// Inserisci il processo nella coda dei processi bloccati
 		insertBlocked(semaddr, curProc) ;
+		
 		curProc = NULL ;
-
 		scheduler() ;
 
 	}
@@ -195,8 +198,7 @@ void waitClock () {
 	semDevices[CLOCK_SEM]-- ;
 	softBlocked++ ;
 
-	// Inserisco il processo nella coda dei bloccati sul semaforo del timer
-	insertBlocked(?, curProc) ;
+	semP(&(semDevices[CLOCK_SEM])) ;
 
 	curProc = NULL ;
 	scheduler() ;
@@ -209,7 +211,13 @@ void waitClock () {
 // status (che indica quindi il successo o meno dell’operazione). I terminali sono device 
 // “doppi”: c’è un campo command per ricevere e uno per trasmettere (un solo processo alla
 // volta accede ad uno specifico device, i processi si sincronizzano tramite sezioni critiche).
-unsigned int IODevOp (unsigned int command, unsigned int *comm_device_register)
+unsigned int IODevOp (unsigned int command, unsigned int *comm_device_register) {
+
+	(*comm_device_register) = command ;
+
+	
+
+}
 
 /// SYS9
 // Restituisce il pid del processo stesso e del processo genitore. Se il campo pid o ppid 

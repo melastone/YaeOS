@@ -75,7 +75,7 @@ void p1(void) {
 	SYSCALL(SEMV, (memaddr)&p1sem, 0, 0);
 	SYSCALL(SEMP, (memaddr)&p1sem, 0, 0);
 
-	SYSCALL(SEMV, (memaddr)&p1ok, 0, 0);
+	SYSCALL(SEMV, (memaddr)&p1ok, 0, 0);	// che sem è???
 	SYSCALL(SEMP, (memaddr)&p1sem, 0, 0);
 	print("P1 survived a terminate process syscall from p0\n");
 	PANIC();
@@ -374,6 +374,7 @@ void test(void) {
 	}
 
 	SYSCALL(SEMP, (memaddr)&p1ok, 0, 0);
+	// p0 è in wait, lo scheduler manda in esec p1 che fa una GETPIDS interna
 	if (p1p0addr != p0addr) {
 		print("GETPIDS: wrong ppid of p1 process\n");
 		PANIC();
@@ -383,7 +384,7 @@ void test(void) {
 		PANIC();
 	}
 
-	SYSCALL(TERMINATEPROCESS, (memaddr)p1addr, 0, 0);
+	SYSCALL(TERMINATEPROCESS, (memaddr)p1addr, 0, 0);	// Non deve terminare p1 poichè bloccato sul semaforo p1sem
 	SYSCALL(WAITCHLD, 0, 0, 0);
 	p1state.pc = (memaddr) p1a;
 	SYSCALL(CREATEPROCESS, (memaddr)&p1state, 10, (memaddr)&p1addr);
