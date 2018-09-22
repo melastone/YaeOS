@@ -122,11 +122,12 @@ void sysHandler() {
 
 						if(checkSysBpHandler()) {
 							copyState(sysbp_old, curProc->old_sysBp);
+							//copyState(curProc->new_sysBp, &(currentProcess->p_s));
 							LDST(curProc->new_sysBp);
 						} else {
 							terminateProcess (NULL);
-							scheduler(); 
 						}
+						scheduler(); 
 	
 
 			} 
@@ -138,12 +139,13 @@ void sysHandler() {
 
 				if(checkSysBpHandler()) {
 					copyState(sysbp_old, curProc->old_sysBp);
+					//copyState(curProc->new_sysBp, &(currentProcess->p_s));
 					LDST(curProc->new_sysBp);
 				} 
 				else {
 					terminateProcess (NULL);
-					scheduler(); 
-		        }	
+				}	
+				scheduler(); 
 			}
 			else
 				PANIC();

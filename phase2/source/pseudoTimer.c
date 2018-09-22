@@ -26,10 +26,11 @@ uint clockTick;                     /// Intervallo di tempo per il prossimo even
 int numTickPriority = 0;            /// Numero di Tick per l'aumento della priorità
 uint quantomPart2 = 0;              /// Valore del TIME SLICE rimanente
 bool completeTimeSlice = true;      /// Indica se il TIME SLICE è stato completato
+bool callTimer = false;
 
 /// setta il valore del Invertal Timer
 void setTimer(){
-    if(!completeTimeSlice){
+    if(!completeTimeSlice && callTimer){
         completeTimeSlice = true;
         setTIMER(quantomPart2);
     }else{
@@ -92,4 +93,8 @@ uint getKernelStart(){
 
 uint getUserStart(){
     return userMode_Start;
+}
+
+void setCallTimer(bool value){
+    callTimer = value;
 }

@@ -21,9 +21,11 @@ int semDevice[MAX_DEVICES];
 
 void intHandler() {
     state_t *oldState = (state_t *) INT_OLDAREA;
-    if(/*controllo se c'è un processo in esecuzione */){
+    if(curProc != NULL){
+        curProc->userTime += (getTODLO() - getUserStart());  //memorizzo il tempo trascorso in user mode
         (*oldState).pc -= WORD_SIZE;               /// Aggiorniamo il PC al istruzione che ha causato interrupt
         //salvataggio del nuovo stato del processo attivo 
+        copyState(oldState, &(curProc->p_s));
     }
 
     uint cause = getCAUSE();
@@ -36,13 +38,15 @@ void intHandler() {
     else if(CAUSE_IP_GET(cause, IL_PRINTER)) deviceHandler(IL_PRINTER);
     else if(CAUSE_IP_GET(cause, IL_TERMINAL)) terminalHandler();
 
-    /*** chiamo lo scheduler ***/
+    /// chiamo lo scheduler 
+    scheduler();
+
 }
 
 void timerHandler() {
     /***  aggiorno il clock  ***/
     setPseudoClock(false);
-
+    setCallTimer(true);
     if(getPseudoClock() >= TICK_PRIORITY){
         /***   chiamo lo scheduler e aumento la priorità dei processi in attesa ***/
 
