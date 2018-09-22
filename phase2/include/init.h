@@ -18,6 +18,7 @@
 
 #include <uARMconst.h>
 #include <uARMtypes.h>
+#include <arch.h>
 #include <pcb.h>
 #include <asht.h>
 #include <types.n>
