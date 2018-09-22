@@ -19,6 +19,7 @@
 
 #include <types.h>
 #include <uARMconst.h>
+#include <syscall.h>
 
 /***************************************************************
 *                           HANDLERS                           *
@@ -36,7 +37,12 @@ void tlbHandler();
 ***************************************************************/
 
 
-void saveCurState(state_t *state, state_t *newState);
+unsigned int checkSysBpHandler();
+
+unsigned int checkTLBHandler();
+
+unsigned int checkPGMHandler();
+
 
 
 
