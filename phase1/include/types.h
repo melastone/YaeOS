@@ -72,8 +72,5 @@ typedef enum ack_type {
 	ACK_TERM_RECIVE
 } ack_type;
 
-<<<<<<< HEAD
-// typedef enum { TRUE, FALSE } bool ;
-=======
->>>>>>> d3bf2c99f6ef1812209dd2590625c5995d49255c
+
 #endif

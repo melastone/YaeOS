@@ -14,7 +14,9 @@
  */
 
 
-#include <exception.h>
+#include <uARMtypes.h>
+#include "exception.h"
+#include "scheduler.h"
 
 
 /*
@@ -67,34 +69,34 @@ void sysHandler() {
 				switch (a1) {
 					//casi SYSCALL
 					case CREATEPROCESS:
-						curProc->p_s.a1 = createProcess(a2, a3, a4);
+						curProc->p_s.a1 = createProcess((state_t*)a2, a3, (void**)a4);
 						break;
 					case TERMINATEPROCESS:
-						curProc->p_s.a1 = terminateProcess(a2);
+						curProc->p_s.a1 = terminateProcess((void*)a2);
 						break;
 					case P:
-						semP(a2);
+						semP((int*)a2);
 						break;
 					case V:
-						semV(a2);
+						semV((int*)a2);
 						break;
 					case SPECHDL:
-						curProc->p_s.a1 = specHdl(a2, a3, a4);
+						curProc->p_s.a1 = specHdl(a2,(state_t*) a3,(state_t*) a4);
 						break;
 					case GETTIME:
-						getTime(a2, a3, a4);
+						getTime((cputime_t*)a2,(cputime_t*) a3,(cputime_t*) a4);
 						break;
 					case WAITCLOCK:
 						waitClock();
 						break;
 					case IODEVOP:
-						curProc->p_s.a1 = ioDevop(a2, a3);
+						curProc->p_s.a1 = ioDevop(a2,(uint*) a3);
 						break;
 					case GETPIDS:
-						getPids(a2, a3);
+						getPids((void**)a2,(void**) a3);
 						break;
 					case WAITCHLD:
-						waitChld();
+						waitChild();
 						break;
 					default:
 						PANIC();

@@ -37,13 +37,13 @@ void semV (int *semaddr);
 int specHdl (int type, state_t *old, state_t *new);
 
 /* SYS6 */
-void getTime (cpu_t *user, cpu_t *kernel, cpu_t *wallclock);
+void getTime (cputime_t *user, cputime_t *kernel, cputime_t *wallclock);
 
 /* SYS7 */
 void waitClock ();
 
 /* SYS8 */
-unsigned int IODevOp (unsigned int command, unsigned int *comm_device_register);
+unsigned int ioDevop (unsigned int command, unsigned int *comm_device_register);
 
 /* SYS9 */
 void getPids(void **pid, void **ppid);
