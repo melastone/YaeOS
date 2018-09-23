@@ -17,7 +17,10 @@
 #include <uARMconst.h>
 #include <uARMtypes.h>
 
-#define cputime_t unsigned int
+#define cpu_t unsigned int
+#define memaddr unsigned int
+
+typedef unsigned int uint;
 
 
 typedef struct pcb_t {
@@ -49,9 +52,9 @@ typedef struct pcb_t {
 
 	// Variabili per la gestione del timing
 
-	cputime_t time;
-	cputime_t kernelTime;
-	cputime_t userTime;
+	cpu_t time;
+	cpu_t kernelTime;
+	cpu_t userTime;
 
 } pcb_t;
 
@@ -63,7 +66,6 @@ typedef struct semd_t {
 	
 } semd_t;
 
-typedef unsigned int uint;
 
 /* Struttura per gli Interrupt Acknowledgements */
 typedef enum ack_type {

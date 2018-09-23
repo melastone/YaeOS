@@ -25,16 +25,21 @@
 #define TICK_SYS7 100000
 #define TICK_PRIORITY 10000
 
+// Costanti per le syscall
 #define CREATEPROCESS 1
 #define TERMINATEPROCESS 2
-#define P 3
-#define V 4
+#define SEMP 3
+#define SEMV 4
 #define SPECHDL 5
 #define GETTIME 6
 #define WAITCLOCK 7
 #define IODEVOP 8
 #define GETPIDS 9
 #define WAITCHLD 10
+
+#define SPECPGMT 0
+#define SPECTLB 1 
+#define SPECSYSBP 2
 
 
 

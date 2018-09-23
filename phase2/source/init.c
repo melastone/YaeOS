@@ -33,10 +33,10 @@ int main() {
 		alle routine di gestione delle Trap 
 	*/
 	
-	initArea(INT_NEWAREA,(memaddr)intHandler());
-	initArea(TLB_NEWAREA,(memaddr)tlbHandler());
-	initArea(PGMTRAP_NEWAREA,(memaddr)pgmHandler());
-	initArea(SYSBK_NEWAREA,(memaddr)sysHandler());
+	initArea(INT_NEWAREA,(memaddr)intHandler);
+	initArea(TLB_NEWAREA,(memaddr)tlbHandler);
+	initArea(PGMTRAP_NEWAREA,(memaddr)pgmHandler);
+	initArea(SYSBK_NEWAREA,(memaddr)sysHandler);
 
 	// Inizializzazione strutture dati Phase 1
 	initPcbs();

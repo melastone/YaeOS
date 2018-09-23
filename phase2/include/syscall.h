@@ -37,7 +37,7 @@ void semV (int *semaddr);
 int specHdl (int type, state_t *old, state_t *new);
 
 /* SYS6 */
-void getTime (cputime_t *user, cputime_t *kernel, cputime_t *wallclock);
+void getTime (cpu_t *user, cpu_t *kernel, cpu_t *wallclock);
 
 /* SYS7 */
 void waitClock ();

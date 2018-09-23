@@ -25,14 +25,13 @@
 #include <libuarm.h>
 #include <pseudoTimer.h>
 
-#define memaddr unsigned int
 
 
 /***************************************************************
 *                        FUNZIONI ESTERNE                      *
 ***************************************************************/
 
-<<<<<<< .mine
+
 extern void test();
 extern void scheduler();
 extern void intHandler();
@@ -40,13 +39,9 @@ extern void tlbHandler();
 extern void pgmHandler();
 extern void sysHandler();
 
-||||||| .r185
-extern void test();
-extern void scheduler();
 
-=======
 void test();
->>>>>>> .r187
+
 /***************************************************************
 *                        VARIABILI KERNEL                      *
 ***************************************************************/

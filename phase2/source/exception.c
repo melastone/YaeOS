@@ -74,17 +74,17 @@ void sysHandler() {
 					case TERMINATEPROCESS:
 						curProc->p_s.a1 = terminateProcess((void*)a2);
 						break;
-					case P:
+					case SEMP:
 						semP((int*)a2);
 						break;
-					case V:
+					case SEMV:
 						semV((int*)a2);
 						break;
 					case SPECHDL:
 						curProc->p_s.a1 = specHdl(a2,(state_t*) a3,(state_t*) a4);
 						break;
 					case GETTIME:
-						getTime((cputime_t*)a2,(cputime_t*) a3,(cputime_t*) a4);
+						getTime((cpu_t*)a2,(cpu_t*) a3,(cpu_t*) a4);
 						break;
 					case WAITCLOCK:
 						waitClock();

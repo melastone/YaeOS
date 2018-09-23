@@ -14,14 +14,6 @@
  */
 
 
-//  TODO: controllare il funzionamento dei doppi puntatori x il valore di ritorno
-//		  di createProcess
-//        fare il controllo sulla terminateRec x i processi bloccati sui semafori
-//        aggiornare i tempi all'interno della semP
-//        assicurarsi che le var cputime_t di ogni pcb vengano aggiornate correttamente
-//        quando faccio la P sul sem del timer, chi è a fare poi la V?
-
-
 #include <uARMtypes.h>
 #include <uARMconst.h>
 #include <libuarm.h>
@@ -169,13 +161,13 @@ int terminateProcess (void *pid) {
 	  		semV((parentSem));
 		}
 
-	  	return ;
+	  	return 0 ;
 	}
 
  	else {
 
 		// Il pid è l'indirizzo del pcb
-		pcb_t* p = (*pid) ;
+		pcb_t* p = pid ;
 
 		if(p->p_parent != NULL) {
 		   	int * parentSem = (int *) curProc->p_parent;
@@ -319,7 +311,7 @@ int specHdl (int type, state_t *old, state_t *new) {
 	  		relativi al processo)
 		– Il tempo trascorso dalla prima attivazione del processo.
 */
-void getTime (cputime_t *user, cputime_t *kernel, cputime_t *wallclock) {
+void getTime (cpu_t *user, cpu_t *kernel, cpu_t *wallclock) {
 	
 	curProc->kernelTime += getTODLO() - getKernelStart();
 	
@@ -470,14 +462,14 @@ void getPids(void **pid, void **ppid) {
 
 	if (pid) {
 		
-		(pcb_t *) tmp_1 = &curProc ;	
-		pid = &tmp_1 ;
+		pcb_t* tmp_1 = curProc ;	
+		*pid = tmp_1 ;
 
 		// Se il processo non è radice
 		if (ppid) {
 
-			(pcb_t *) tmp_2 = &(curProc->p_parent) ;
-			ppid = &tmp_2 ;
+			pcb_t* tmp_2 = (curProc->p_parent) ;
+			*ppid = tmp_2 ;
 			return ;
 		
 		}
