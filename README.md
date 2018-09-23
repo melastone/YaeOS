@@ -11,6 +11,9 @@ La fase 1 del progetto consiste nella realizzazione del Livello 2 del Sistema Op
 
 Questo livello implementa le funzionalità relative ai Process Control Blocks, le strutture di dati dei processi. Nello specifico esso contiene due librerie, le quali gestiscono code ed alberi di PCB ed una Active Semaphore Hash Table che si occupa dei processi bloccati sui semafori. 
 
+### Fase 2
+La fase 2 consiste nell'implementazione del nucleo del __kernel__. 
+Questo livello si occupa delle funzioni di scheduling e di gestione delle eccezioni.
 
 ## PREREQUISITI
 
@@ -52,14 +55,26 @@ Dopodichè avviare l'emulatore uARM digitando nel terminale
 Dalla schermata che si aprirà, cliccare sul menù delle impostazioni ed attraverso il pulsante __Browse..__ della sezione __Core File__ selezionare l'eseguibile generato precedentemente.
 Accendere poi la macchina attraverso il pulsante di Power on, aprire uno dei terminali dal menù Terminals ed avviare il test cliccando sul tasto Play. 
 
+## TEST 2
+Il test della Fase 2 può essere effettuato seguendo la stessa sequenza di istruzioni del Test P1, dove pero al comando 
+
+`$ make test`
+
+occorre sostituire il comando 
+
+`$ make`
+Questo genererà un eseguibile chiamato __kernel__. Avviando l'emulatore uARM - occorre digitare nel terminale
+
+`$ uarm`
+
+si può mandare in esecuzione seguendo i passaggi di cui sopra.
+
 ## AUTORI
 
 - [Daniel Veroli](https://github.com/denzelbass)
 - [Lorenzo Turrini](https://github.com/lorenzoturrini)
 - [Lorenzo Poluzzi](https://github.com/lorenzopoluzzis)
 - [Melania Ghelli](https://github.com/melastone)
-
-## LICENZA
 
 ## INFORMAZIONI E LINK UTILI
 
