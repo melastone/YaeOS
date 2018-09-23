@@ -14,7 +14,7 @@
 #define MINCLOCKLOOP            3000
 
 #include <pcb.h>
-#include <asl.h>
+#include <asht.h>
 
 int term_mutex = 1;
 int p1sem = 0;
