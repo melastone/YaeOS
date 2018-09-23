@@ -25,4 +25,17 @@
 #define TICK_SYS7 100000
 #define TICK_PRIORITY 10000
 
+#define CREATEPROCESS 1
+#define TERMINATEPROCESS 2
+#define P 3
+#define V 4
+#define SPECHDL 5
+#define GETTIME 6
+#define WAITCLOCK 7
+#define IODEVOP 8
+#define GETPIDS 9
+#define WAITCHLD 10
+
+
+
 #endif
