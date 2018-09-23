@@ -26,6 +26,7 @@
 #include <uARMconst.h>
 #include <libuarm.h>
 #include "const.h"
+#include "types.h"
 #include "exception.h"
 #include "syscall.h"
 #include "pcb.h"
@@ -74,13 +75,38 @@ void terminateRec(pcb_t *proc) {
 
 int checkIf_RCVMODE(unsigned int *comm_device_register, int interrupt_line, int device_number) {
 
-	if ((comm_device_register - DEV_REG_ADDR(interrupt_line,device_number)) < 0x8)
+	if (((int)comm_device_register - DEV_REG_ADDR(interrupt_line,device_number)) < 0x8)
 		return TRUE;
 	else
 		return FALSE;
 
 }
 
+
+void saveCurState(state_t *state, state_t *newState) {
+	newState->a1 = state->a1;
+	newState->a2 = state->a2;
+	newState->a3 = state->a3;
+	newState->a4 = state->a4;
+	newState->v1 = state->v1;
+	newState->v2 = state->v2;
+	newState->v3 = state->v3;
+	newState->v4 = state->v4;
+	newState->v5 = state->v5;
+	newState->v6 = state->v6;
+	newState->sl = state->sl;
+	newState->fp = state->fp;
+	newState->ip = state->ip;
+	newState->sp = state->sp;
+	newState->lr = state->lr;
+	newState->pc = state->pc;
+	newState->cpsr = state->cpsr;
+	newState->CP15_Control = state->CP15_Control;
+	newState->CP15_EntryHi = state->CP15_EntryHi;
+	newState->CP15_Cause = state->CP15_Cause;
+	newState->TOD_Hi = state->TOD_Hi;
+	newState->TOD_Low = state->TOD_Low;
+}
 
 
 
@@ -99,15 +125,15 @@ int checkIf_RCVMODE(unsigned int *comm_device_register, int interrupt_line, int 
 */
 int createProcess (state_t *statep, int priority, void **cpid) {
 
-	pcb_t newP = allocPcb() ;
+	pcb_t* newP = allocPcb() ;
 
 	// Se non ci sono pcb liberi la funzione deve ritornare -1
 	if (newP != NULL) {
 
-		(newP->p_priority) = priority ;
+		((*newP)->p_priority) = priority ;
 
 		// Setto i valori di state_t del nuovo processo come quelli del genitore
-		saveCurState(statep, &(newP->p_s)) ;
+		saveCurState(statep, &((*newP)->p_s)) ;
 
 		processCount++ ;
 
@@ -115,9 +141,9 @@ int createProcess (state_t *statep, int priority, void **cpid) {
 		insertChild(curProc, newP) ;
 		insertProcQ(&readyQueue, newP) ;
 
-		newP->activation_time = getTODLO() ;
+		(*newP)->activation_time = getTODLO() ;
 
-		cpid = &(newP) ;
+		cpid = newP ;
 		return 0 ;
 
 	}
@@ -173,7 +199,7 @@ int terminateProcess (void *pid) {
  */
 void semP (int *semaddr) {
 
-		(*semaddr)-- ;
+	(*semaddr)-- ;
 
 	if ((*semAddr) < 0) {
 
@@ -186,7 +212,7 @@ void semP (int *semaddr) {
 		curProc = NULL;
 
 	}
-	
+
 }
 
 

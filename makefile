@@ -54,12 +54,12 @@ OBJECTS_P2 = $(SRC_P2)/exception.o $(SRC_P2)/init.o $(SRC_P2)/interrupts.o $(SRC
 
 all: yaeOS
 
-yaeOS: phase1 phase2
+yaeOS: p1 kernel
 
-phase1: pcb.o asht.o test-pcb.o
+p1: pcb.o asht.o test-pcb.o
 	$(UL) $(FLAG_UL) -o $@ pcb.o asht.o test-pcb.o
 
-phase2: $(OBJECTS_P2)
+kernel: $(OBJECTS_P2)
 	$(UL) $(FLAG_UL) -o $@ exception.o init.o interrupts.o pseudoTimer.o scheduler.o syscall.o p2test.o
 
 pcb.o: $(SRC_P1)/pcb.c $(INCL_PCB)
@@ -69,7 +69,7 @@ asht.o: $(SRC_P1)/asht.c $(INCL_ASHT)
 	$(CC) $(FLAG_CC_P1) $(SRC_P1)/asht.c
 
 test-pcb.o: $(P1)/test-pcb.c $(INCL_ASHT)
-	$(CC) $(FLAG_CC_P1) $(SRC_P1)/test-pcb.c
+	$(CC) $(FLAG_CC_P1) $(P1)/test-pcb.c
 
 exception.o: $(SRC_P2)/exception.c $(INCL_EXC)
 	$(CC) $(FLAG_CC_P2) $(SRC_P2)/exception.c

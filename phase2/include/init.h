@@ -21,7 +21,7 @@
 #include <arch.h>
 #include <pcb.h>
 #include <asht.h>
-#include <types.n>
+#include <types.h>
 #include <libuarm.h>
 #include <pseudoTimer.h>
 

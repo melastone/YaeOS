@@ -14,8 +14,8 @@
  *
  */
 
-#include <init.h>
-
+#include "init.h"
+#include "types.h"
 
 /***************************************************************
 *                         SYSTEM CALL                      	   *
