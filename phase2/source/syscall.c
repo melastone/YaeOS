@@ -194,7 +194,7 @@ int terminateProcess (void *pid) {
  */
 void semP (int *semaddr) {
 
-	(*semaddr)-- ;
+	(*semaddr) = (*semaddr) - 1 ;
 
 	if ((*semaddr) < 0) {
 		curProc->kernelTime += getTODLO() - getKernelStart();
@@ -231,7 +231,7 @@ void semV (int *semaddr) {
 			softBlockCounter--;
 			insertProcQ(&readyQueue, removedProc);
 		}
-	}
+	}	
 
 }
 

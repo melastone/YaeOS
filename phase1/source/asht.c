@@ -21,7 +21,7 @@
 
 semd_t *semdFree_h ; //puntatore allla testa della lista dei SEMD  liberi
 
-semd_t *semdhash[ASHDSIZE] ; // hash table dei semafori attivi.
+semd_t* semdhash[ASHDSIZE] ; // hash table dei semafori attivi.
 
 static semd_t semd_table[MAXSEMD];
 
@@ -134,7 +134,7 @@ int insertBlocked(int *key, pcb_t *p){
 
 		else {
 			if(semdFree_h != NULL){
-				semd_t * semdFree = semdFree_h; //prendo un SEMD dalla lista di quelli liberi
+				semd_t* semdFree = semdFree_h; //prendo un SEMD dalla lista di quelli liberi
 				semdFree_h = semdFree_h->s_next; //tolgo SEMD che ho appena preso
 				//setto i campi del SEMD
 				semdFree->s_next = NULL;
@@ -142,8 +142,9 @@ int insertBlocked(int *key, pcb_t *p){
 				//setto la key del processo
 				p->p_semKey = key;
 				semdFree->s_procQ = p;
-				//inserisco SEMD nel HASH TABLE
-				semdInsert(&semdhash[indice],semdFree);
+				//inserisco SEMD nel HASH TABL
+				/*semdInsert(&semdhash[indice],semdFree);*/
+				semdhash[indice] = semdFree ;
 				return 0;
 			}
 		}
