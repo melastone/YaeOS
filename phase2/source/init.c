@@ -73,7 +73,7 @@ int main() {
 	insertProcQ(&readyQueue, firstProcess);
 	processCounter++;
 
-	//TEMPO PROCESSO?
+	//TEMPO PROCESSO
 	initPseudoClock();
 	setisCallInterruptTimer(true);
 	setUserStart();

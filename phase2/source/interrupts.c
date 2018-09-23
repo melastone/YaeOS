@@ -80,7 +80,7 @@ void deviceHandler(int type){
 void terminalHandler() {
     uint *bitmapLine = (uint *) CDEV_BITMAP_ADDR(INT_TERMINAL);
     uint terminalNumber = getDeviceFromBitmap(bitmapLine);
-    devreg_t *terminalRegister = (devreg_t *) DEV_REG_ADDR(type,deviceNumber);
+    devreg_t *terminalRegister = (devreg_t *) DEV_REG_ADDR(type,terminalNumber);
 
     uint indice = 0;
 
