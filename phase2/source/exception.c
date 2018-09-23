@@ -122,8 +122,8 @@ void sysHandler() {
 				saveCurState(curProc->new_sysBp, &(currentProcess->p_s));
 			} else {
 				terminateProcess (NULL);
-				scheduler();
 			}
+			scheduler();
 			 
 	}
 	// Controllo se la l'eccezione è di tipo BREAKPOINT 
@@ -139,9 +139,8 @@ void sysHandler() {
 			} 
 			else {
 				terminateProcess (NULL);
-				scheduler(); 
 			}	
-			
+			scheduler(); 
 		}
 		else
 			PANIC();
@@ -167,9 +166,8 @@ void pgmHandler() {
 	}
 	else {
 		terminateProcess(NULL);
-		scheduler();
 	}
-
+	scheduler();
 }
 
 
@@ -189,9 +187,8 @@ void tlbHandler() {
 		}
 		else {
 			terminateProcess(NULL);
-			scheduler();
 		}
-
+		scheduler();
 
 }
 
