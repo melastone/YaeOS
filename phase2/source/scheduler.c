@@ -25,6 +25,20 @@
 *                           SCHEDULER                          *
 ***************************************************************/
 
+
+/*
+	SCHEDULER
+	Si occupa di regolare l'avvicendamento dei processi nella CPU: ogni processo ha un time-slice massimo di 3 ms 
+	e questi vengono prelevati dalla readyQueue sulla base della loro priorità. 
+	A tal proposito per far sì che tutti i processi arrivino poi ad aggiudicarsi un posto nel processore,
+	ogni 10 ms viene lanciata una funzione di aging (readyQueueAging()) che si occupa di incrementare di 1 
+	tutte le priorità dei processi nella readyQueue (purché questi non abbiano già priorità massima 10).
+	Lo scheduler comprende inoltre, un meccanismo di deadlock detection per prevenire e gestire nella maniera 
+	più opportuna possibili situazioni di stallo.
+*/
+
+
+
 void scheduler() {
 
 	// Controllo l'eventuale presenza di processi in esecuzione 
@@ -81,6 +95,9 @@ void scheduler() {
 *                           AGING                              *
 ***************************************************************/
 
+/*
+	Funzione di aging per la readyQueue.
+*/
 
 void readyQueueAging() {
 
