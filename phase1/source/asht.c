@@ -143,8 +143,7 @@ int insertBlocked(int *key, pcb_t *p){
 				p->p_semKey = key;
 				semdFree->s_procQ = p;
 				//inserisco SEMD nel HASH TABL
-				/*semdInsert(&semdhash[indice],semdFree);*/
-				semdhash[indice] = semdFree ;
+				semdInsert(&semdhash[indice],semdFree);
 				return 0;
 			}
 		}
