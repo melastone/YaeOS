@@ -49,6 +49,7 @@ void scheduler() {
 		// Carico il primo processo dalla readyQueue 
 		// (che coincide con quello a priorità più alta)
 		curProc = removeProcQ(&readyQueue);
+		curProc->p_priority = curProc->base_priority;
 		//setto il tempo di inizo del processo 
 		if(curProc->time == 0){
 			curProc->time = getTODLO();

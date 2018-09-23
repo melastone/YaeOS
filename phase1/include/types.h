@@ -39,7 +39,7 @@ typedef struct pcb_t {
 	state_t sys_new;
 	state_t p_s;   /* processor state */
 	int p_priority;
-	int base_prority;
+	int base_priority;
 	int *p_semKey;
 
 

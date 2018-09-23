@@ -14,9 +14,6 @@
 #define CLOCKINTERVAL   100000UL        /* interval to V clock semaphore */
 #define CLOCKLOOP               10
 #define MINCLOCKLOOP            3000
-#define SPECSYSBP				0
-#define SPECTLB					1
-#define SPECPGMT             	2
 
 #include <pcb.h>
 #include <asht.h>
