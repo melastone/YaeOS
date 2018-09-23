@@ -53,7 +53,7 @@ void sysHandler() {
 		
 		//controllo che la modalità di esecuzione sia SYSTEM MODE (KERNEL) 
 		else if((curProc->p_s.cpsr & STATUS_SYS_MODE) == STATUS_SYS_MODE) {
-			saveCurState(sysbp_old, curProc->p_s);
+			saveCurState(sysbp_old, &(curProc->p_s));
 			curProc->userTime += getTODLO() - getUserStart();
 			setKernelStart();
 			//creo variabili relative ai registri di stato a1 ... a4
@@ -67,10 +67,10 @@ void sysHandler() {
 				switch (a1) {
 					//casi SYSCALL
 					case CREATEPROCESS:
-						createProcess->p_s.a1 = createProcess(a2, a3, a4);
+						curProc->p_s.a1 = createProcess(a2, a3, a4);
 						break;
 					case TERMINATEPROCESS:
-						createProcess->p_s.a1 = terminateProcess(a2);
+						curProc->p_s.a1 = terminateProcess(a2);
 						break;
 					case P:
 						semP(a2);
@@ -79,7 +79,7 @@ void sysHandler() {
 						semV(a2);
 						break;
 					case SPECHDL:
-						createProcess->p_s.a1 = specHdl(a2, a3, a4);
+						curProc->p_s.a1 = specHdl(a2, a3, a4);
 						break;
 					case GETTIME:
 						getTime(a2, a3, a4);
@@ -88,7 +88,7 @@ void sysHandler() {
 						waitClock();
 						break;
 					case IODEVOP:
-						createProcess->p_s.a1 = ioDevop(a2, a3);
+						curProc->p_s.a1 = ioDevop(a2, a3);
 						break;
 					case GETPIDS:
 						getPids(a2, a3);
@@ -119,14 +119,14 @@ void sysHandler() {
 				curProc->userTime += getTODLO() - getUserStart();
 				setKernelStart();
 				saveCurState(sysbp_old, curProc->old_sysBp);
-				saveCurState(curProc->new_sysBp, &(currentProcess->p_s));
+				saveCurState(curProc->new_sysBp, &(curProc->p_s));
 			} else {
 				terminateProcess (NULL);
 			}
 			scheduler();
 			 
 	}
-	// Controllo se la l'eccezione è di tipo BREAKPOINT 
+	// Controllo se l'eccezione è di tipo BREAKPOINT 
 	else {
 			
 		if(CAUSE_EXCCODE_GET(sysbp_old->CP15_Cause) == EXC_BREAKPOINT) {
@@ -135,7 +135,7 @@ void sysHandler() {
 				curProc->userTime += getTODLO() - getUserStart();
 				setKernelStart();
 				saveCurState(sysbp_old, curProc->old_sysBp);
-				saveCurState(curProc->new_sysBp, &(currentProcess->p_s));
+				saveCurState(curProc->new_sysBp, &(curProc->p_s));
 			} 
 			else {
 				terminateProcess (NULL);
@@ -162,7 +162,7 @@ void pgmHandler() {
 		curProc->userTime += getTODLO() - getUserStart();
 		setKernelStart();
 		saveCurState(pgmtrap_old, curProc->old_pgm);
-		saveCurState(curProc->new_pgm, &(currentProcess->p_s));
+		saveCurState(curProc->new_pgm, &(curProc->p_s));
 	}
 	else {
 		terminateProcess(NULL);
@@ -183,7 +183,7 @@ void tlbHandler() {
 			curProc->userTime += getTODLO() - getUserStart();
 			setKernelStart();
 			saveCurState(tlb_old, curProc->old_tlb); 
-			saveCurState(curProc->new_tlb,&(currentProcess->p_s));
+			saveCurState(curProc->new_tlb,&(curProc->p_s));
 		}
 		else {
 			terminateProcess(NULL);

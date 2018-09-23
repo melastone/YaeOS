@@ -13,7 +13,7 @@
  *
  */
 
-#include "interrupts.h"
+#include <interrupts.h>
 
 
 void intHandler() {
@@ -51,9 +51,9 @@ void timerHandler() {
         int numTickPriority = incTickPriority();
         if(numTickPriority == 10){
             /***  sblocco tutti i processi bloccati dalla SYS7   ***/
-            while (semDevice[CLOCK_SEM] < 0) {
-                ///SYS CALL V sul semaforo semDevice[CLOCK_SEM]
-                semV (&(semDevice[CLOCK_SEM]));
+            while (semDevices[CLOCK_SEM] < 0) {
+                ///SYS CALL V sul semaforo semDevices[CLOCK_SEM]
+                semV (&(semDevices[CLOCK_SEM]));
             }
         }
         /***   resetto il clock considerando il ritardo ***/
@@ -72,7 +72,7 @@ void timerHandler() {
 void deviceHandler(int type){
     uint *bitmapLine = (uint *) CDEV_BITMAP_ADDR(type);   //prendo la linea di interrupt della bitmpa per lo specifico device
     uint deviceNumber = getDeviceFromBitmap(bitmapLine);  //prendo il numero del device 
-    devreg_t *deviceRegister = (devreg_t *) DEV_REG_ADDR(type,deviceNumber); //prendo il registro del device
+    devreg_t *deviceRegister = (devreg_t *) DEV_REG_ADDR(type ,deviceNumber); //prendo il registro del device
 
     uint indice = EXT_IL_INDEX(type) * N_DEV_PER_IL + deviceNumber;
     acknowledge(indice, deviceRegister, ACK_GEN_DEVICE);
@@ -81,7 +81,7 @@ void deviceHandler(int type){
 void terminalHandler() {
     uint *bitmapLine = (uint *) CDEV_BITMAP_ADDR(INT_TERMINAL);
     uint terminalNumber = getDeviceFromBitmap(bitmapLine);
-    devreg_t *terminalRegister = (devreg_t *) DEV_REG_ADDR(type,terminalNumber);
+    devreg_t *terminalRegister = (devreg_t *) DEV_REG_ADDR(INT_TERMINAL,terminalNumber);
 
     uint indice = 0;
 
@@ -112,8 +112,8 @@ uint getDeviceFromBitmap(int * lineAddr) {
 
 void acknowledge(uint semIndex, devreg_t *devRegister, ack_type typeAck) {
     // Quando un processo è bloccato su un device, ritorna un risultato dell'operazione e ack della fine
-    if(semDevice[semIndex] < 0) {
-        pcb_t *processo = headBlocked(&semDevice[semIndex]);
+    if(semDevices[semIndex] < 0) {
+        pcb_t *processo = headBlocked(&semDevices[semIndex]);
         switch(typeAck){
             case ACK_GEN_DEVICE:
                 processo->p_s.a1 = devRegister->dtp.status;
@@ -130,7 +130,7 @@ void acknowledge(uint semIndex, devreg_t *devRegister, ack_type typeAck) {
                 break;
 
         }
-        //SYS CALL V sul semaforo semDevice[semIndex]
-        semV (&(semDevice[semIndex]));
+        //SYS CALL V sul semaforo semDevices[semIndex]
+        semV (&(semDevices[semIndex]));
     }
 }

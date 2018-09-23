@@ -16,7 +16,7 @@
 
 #include <uARMconst.h>
 #include <uARMtypes.h>
-
+ 
 #define cpu_t unsigned int
 
 typedef struct pcb_t {
@@ -71,5 +71,4 @@ typedef enum ack_type {
 	ACK_TERM_RECIVE
 } ack_type;
 
-typedef enum { TRUE, FALSE } bool ;
 #endif

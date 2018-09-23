@@ -32,8 +32,8 @@
 *                        FUNZIONI ESTERNE                      *
 ***************************************************************/
 
-EXTERN void test();
-EXTERN void scheduler();
+extern void test();
+extern void scheduler();
 
 /***************************************************************
 *                        VARIABILI KERNEL                      *
