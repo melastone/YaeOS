@@ -17,7 +17,7 @@
 #include <uARMconst.h>
 #include <uARMtypes.h>
 
-#define cpu_t unsigned int
+#define cputime_t unsigned int
 
 typedef struct pcb_t {
 
@@ -48,9 +48,9 @@ typedef struct pcb_t {
 
 	// Variabili per la gestione del timing
 
-	cpu_t time;
-	cpu_t kernelTime;
-	cpu_t userTime;
+	cputime_t time;
+	cputime_t kernelTime;
+	cputime_t userTime;
 
 } pcb_t;
 
@@ -71,5 +71,5 @@ typedef enum ack_type {
 	ACK_TERM_RECIVE
 } ack_type;
 
-typedef enum { TRUE, FALSE } bool ;
+// typedef enum { TRUE, FALSE } bool ;
 #endif

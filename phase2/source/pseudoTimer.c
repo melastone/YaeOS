@@ -13,6 +13,7 @@
  *
  */
 
+#include <libuarm.h>
 #include "pseudoTimer.h"
 #include "const.h"
 #include "types.h"
@@ -27,6 +28,7 @@ int numTickPriority = 0;            /// Numero di Tick per l'aumento della prior
 uint quantomPart2 = 0;              /// Valore del TIME SLICE rimanente
 int completeTimeSlice = TRUE;      /// Indica se il TIME SLICE è stato completato
 int isCallInterruptTimer = FALSE;  /// Indica se è avvenuto un interrupt timer se non è avvenuto non setto il setTIMER 
+
 
 /// setta il valore del Invertal Timer
 void setTimer(){
@@ -86,7 +88,7 @@ void setKernelStart(){
 }
 
 void setUserStart(){
-    userMode_Start = getTODLO()
+    userMode_Start = getTODLO();
 }
 
 uint getKernelStart(){

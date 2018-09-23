@@ -17,6 +17,8 @@
 #define MAXPROC 20
 #define MAXSEMD MAXPROC
 #define ASHDSIZE 8
+#define MAXPRIO 10
+#define MINPRIO 
 
 /// Tempi di Scheduling costanti 
 #define TIME_SLICE 3000  

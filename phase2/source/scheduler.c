@@ -14,7 +14,10 @@
  */
 
 
-#include <scheduler.h>
+#include "pseudoTimer.h"
+#include "init.h"
+#include "scheduler.h"
+#include "const.h"
 
 
 
@@ -32,7 +35,7 @@ void scheduler() {
 			/* Non ci sono più processi */
 			if (processCounter == 0) HALT();
 			/* Processi in atesa di I/O */
-			if (processCounter > 0 && softBlockedCounter > 0) {
+			if (processCounter > 0 && softBlockCounter > 0) {
 				/* Riabilito tutti gli interrupt */ 
 				setSTATUS(STATUS_ALL_INT_ENABLE(getSTATUS()));
 				WAIT();
@@ -53,13 +56,13 @@ void scheduler() {
 	}
 	// Esiste un processo attualmente in esecuzione
 	else {
-		curProc->kernelTime += getTODLO() - kernelMode_Start;
+		curProc->kernelTime += getTODLO() - getKernelStart();
 		setPseudoClock(FALSE);
 	}
 
 	// setto il valore del interval timer 
 	setTimer();
-	isCallInterruptTimer(FALSE);
+	setisCallInterruptTimer(FALSE);
 	setUserStart();
 	//CONTEXT SWITCH
 	//Carico lo stato del processo corrente nei registri

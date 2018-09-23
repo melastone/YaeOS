@@ -14,7 +14,8 @@
  */
 
 
-#include <init.h>
+#include "init.h"
+#include "scheduler.h"
 
 
 /***************************************************************
@@ -45,12 +46,14 @@ int main() {
 	softBlockCounter = 0;
 	curProc = NULL;
 
-	// Inizializzazione dei Semafori (?)
+	// Inizializzazione dei Semafori
+	int i ;
 	for (i = 0; i < MAX_DEVICES; i++) semDevices[i] = 0;
 
 	//-------------------------------------------------------
 
 	// Creazione PCB del primo processo 
+	pcb_t* firstProcess;
 	if ((firstProcess = allocPcb()) == NULL) PANIC();
 	
 	// Abilitazione degli Interrupt

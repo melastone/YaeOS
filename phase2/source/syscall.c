@@ -28,6 +28,7 @@
 #include "const.h"
 #include "types.h"
 #include "exception.h"
+#include "init.h"
 #include "syscall.h"
 #include "pcb.h"
 #include "asht.h"
@@ -127,10 +128,10 @@ int createProcess (state_t *statep, int priority, void **cpid) {
 	if (newP != NULL) {
 		// Setto i valori di state_t del nuovo processo come quelli del genitore
 		saveCurState(statep, &(newP->p_s));
-		cpid = &(newP);
+		*cpid = &(newP);
 		(newP->p_priority) = priority ;
 		(newP->time) = getTODLO();
-		processCount++ ;
+		processCounter++ ;
 
 		// Creo i legami di parentela e inserisco il nuovo processo nella coda dei ready
 		insertChild(curProc, newP) ;
@@ -158,19 +159,23 @@ int terminateProcess (void *pid) {
 	if (pid == NULL) {
 		
 		if(curProc->p_parent != NULL) {
+
 			int * parentSem = (int *) curProc->p_parent;
+
 			outChild(curProc);
 			terminateRec(curProc);
+
 			curProc = NULL;
-	  		semV((parentSem);
-	  	}
+	  		semV((parentSem));
+		}
 
 	  	return ;
- 	}
+	}
 
  	else {
+
 		// Il pid è l'indirizzo del pcb
-		pcb_t p = (*pid) ;
+		pcb_t* p = (*pid) ;
 
 		if(p->p_parent != NULL) {
 		   	int * parentSem = (int *) curProc->p_parent;
@@ -182,7 +187,7 @@ int terminateProcess (void *pid) {
 		return 0 ;
  	}
 
- return -1 ;
+    return -1 ;
 
 }
 
@@ -198,7 +203,7 @@ void semP (int *semaddr) {
 
 	(*semaddr)-- ;
 
-	if ((*semAddr) < 0) {
+	if ((*semaddr) < 0) {
 		curProc->kernelTime += getTODLO() - getKernelStart();
 		// Inserisci il processo nella coda dei processi bloccati
 		insertBlocked(semaddr, curProc);
@@ -315,7 +320,9 @@ int specHdl (int type, state_t *old, state_t *new) {
 		– Il tempo trascorso dalla prima attivazione del processo.
 */
 void getTime (cputime_t *user, cputime_t *kernel, cputime_t *wallclock) {
+	
 	curProc->kernelTime += getTODLO() - getKernelStart();
+	
 	(*user) = (curProc->userTime) ;
 
 	(*kernel) = (curProc->kernelTime) ;
@@ -362,7 +369,7 @@ unsigned int ioDevop (unsigned int command, unsigned int *comm_device_register) 
 	setSTATUS(STATUS_ALL_INT_ENABLE(getSTATUS()));
 
 	/* Calcolo l'indirizzo dello status_device_register */
-	unsigned int base_device_register = comm_device_register - DEV_REG_START;
+	unsigned int base_device_register = (int)comm_device_register - DEV_REG_START;
 
 	/* 
 		Puntatore ad una struttura registro device generica, 
@@ -405,7 +412,7 @@ unsigned int ioDevop (unsigned int command, unsigned int *comm_device_register) 
 	semP(&(semDevices[index]));
 
 	// Inializzo una variabile per contenere lo status
-	UI status = 0;
+	unsigned int status = 0;
 
 	
 	if (semDevices[index] >= -1){
@@ -427,12 +434,13 @@ unsigned int ioDevop (unsigned int command, unsigned int *comm_device_register) 
 
 		if (interrupt_line == IL_TERMINAL) {
 			
-			if (checkIf_RCVMODE(comm_device_register,interrupt_line,device_number))		
+			if (checkIf_RCVMODE(comm_device_register,interrupt_line,device_number)) {		
 				deviceRegister->term.recv_command = command;
 				status = deviceRegister->term.recv_status;
+			}
 			
 			else {				
-				deviceRegisteer->term.transm_command = command;
+				deviceRegister->term.transm_command = command;
 				status = deviceRegister->term.transm_status;
 
 			}
@@ -488,7 +496,7 @@ void waitChild() {
 
  	if(curProc->p_first_child != NULL) {
 		curProc->kernelTime += getTODLO() - getKernelStart();
-  		semP((int) *curProc);
+  		semP((int *) curProc);
 
  	} 
 
