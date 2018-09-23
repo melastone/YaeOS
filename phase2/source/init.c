@@ -75,7 +75,7 @@ int main() {
 
 	//TEMPO PROCESSO
 	initPseudoClock();
-	setisCallInterruptTimer(true);
+	setisCallInterruptTimer(TRUE);
 	setUserStart();
 	scheduler();
 

@@ -47,19 +47,19 @@ void scheduler() {
 		curProc = removeProcQ(&readyQueue);
 		//setto il tempo di inizo del processo 
 		if(curProc->time == 0){
-			curProc->time = getTODLO;
+			curProc->time = getTODLO();
 		}
-		setPseudoClock(false);
+		setPseudoClock(FALSE);
 	}
 	// Esiste un processo attualmente in esecuzione
 	else {
 		curProc->kernelTime += getTODLO() - kernelMode_Start;
-		setPseudoClock(false);
+		setPseudoClock(FALSE);
 	}
 
 	// setto il valore del interval timer 
 	setTimer();
-	isCallInterruptTimer(false);
+	isCallInterruptTimer(FALSE);
 	setUserStart();
 	//CONTEXT SWITCH
 	//Carico lo stato del processo corrente nei registri

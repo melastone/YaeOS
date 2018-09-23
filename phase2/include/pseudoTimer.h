@@ -29,11 +29,11 @@ uint getUserStart();
 
 void initPseudoClock();
 uint getPseudoClock();   
-void setPseudoClock(bool reset);       
+void setPseudoClock(int reset);       
 
 int incTickPriority();
 
-bool getCompleteTimeSlice();
+int getCompleteTimeSlice();
 
-void setisCallInterruptTimer(bool value);
+void setisCallInterruptTimer(int value);
 #endif

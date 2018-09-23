@@ -59,3 +59,5 @@ void waitChild();
 int checkIf_RCVMODE(unsigned int *comm_device_register, int interrupt_line, int device_number);
 
 void terminateRec(pcb_t *proc);
+
+void saveCurState(state_t *state, state_t *newState);

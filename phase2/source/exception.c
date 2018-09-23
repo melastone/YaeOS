@@ -46,14 +46,14 @@ void sysHandler() {
 
 		//controllo se la modaltà di esecuzione è USER MODE
 		if((curProc->p_s.cpsr & STATUS_USER_MODE) == STATUS_USER_MODE) {
-			copyState(sysbp_old, pgmtrap_old);
+			saveCurState(sysbp_old, pgmtrap_old);
 			pgmtrap_old->CP15_Cause = CAUSE_EXCCODE_SET(pgmtrap_old->CP15_Cause, EXC_RESERVEDINSTR);
 			pgmHandler();
 		}
 		
 		//controllo che la modalità di esecuzione sia SYSTEM MODE (KERNEL) 
 		else if((curProc->p_s.cpsr & STATUS_SYS_MODE) == STATUS_SYS_MODE) {
-			copyState(sysbp_old, curProc->p_s);
+			saveCurState(sysbp_old, curProc->p_s);
 			curProc->userTime += getTODLO() - getUserStart();
 			setKernelStart();
 			//creo variabili relative ai registri di stato a1 ... a4
@@ -118,8 +118,8 @@ void sysHandler() {
 			if(checkSysBpHandler()) {
 				curProc->userTime += getTODLO() - getUserStart();
 				setKernelStart();
-				copyState(sysbp_old, curProc->old_sysBp);
-				copyState(curProc->new_sysBp, &(currentProcess->p_s));
+				saveCurState(sysbp_old, curProc->old_sysBp);
+				saveCurState(curProc->new_sysBp, &(currentProcess->p_s));
 			} else {
 				terminateProcess (NULL);
 				scheduler();
@@ -134,8 +134,8 @@ void sysHandler() {
 			if(checkSysBpHandler()) {
 				curProc->userTime += getTODLO() - getUserStart();
 				setKernelStart();
-				copyState(sysbp_old, curProc->old_sysBp);
-				copyState(curProc->new_sysBp, &(currentProcess->p_s));
+				saveCurState(sysbp_old, curProc->old_sysBp);
+				saveCurState(curProc->new_sysBp, &(currentProcess->p_s));
 			} 
 			else {
 				terminateProcess (NULL);
@@ -162,8 +162,8 @@ void pgmHandler() {
 	if(checkPGMHandler()) {
 		curProc->userTime += getTODLO() - getUserStart();
 		setKernelStart();
-		copyState(pgmtrap_old, curProc->old_pgm);
-		copyState(curProc->new_pgm, &(currentProcess->p_s));
+		saveCurState(pgmtrap_old, curProc->old_pgm);
+		saveCurState(curProc->new_pgm, &(currentProcess->p_s));
 	}
 	else {
 		terminateProcess(NULL);
@@ -184,8 +184,8 @@ void tlbHandler() {
 		if(checkTLBHandler()) {	
 			curProc->userTime += getTODLO() - getUserStart();
 			setKernelStart();
-			copyState(tlb_old, curProc->old_tlb); 
-			copyState(curProc->new_tlb,&(currentProcess->p_s));
+			saveCurState(tlb_old, curProc->old_tlb); 
+			saveCurState(curProc->new_tlb,&(currentProcess->p_s));
 		}
 		else {
 			terminateProcess(NULL);

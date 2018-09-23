@@ -23,7 +23,7 @@ void intHandler() {
         setKernelStart();
         (*oldState).pc -= WORD_SIZE;               /// Aggiorniamo il PC al istruzione che ha causato interrupt
         //salvataggio del nuovo stato del processo attivo 
-        copyState(oldState, &(curProc->p_s));
+        saveCurState(oldState, &(curProc->p_s));
     }
 
     uint cause = getCAUSE();
@@ -43,27 +43,28 @@ void intHandler() {
 
 void timerHandler() {
     /***  aggiorno il clock  ***/
-    setPseudoClock(false);
-    setisCallInterruptTimer(true);
+    setPseudoClock(FALSE);
+    setisCallInterruptTimer(TRUE);
     if(getPseudoClock() >= TICK_PRIORITY){
         /***   chiamo lo scheduler e aumento la priorità dei processi in attesa ***/
         readyQueueAging();
         int numTickPriority = incTickPriority();
         if(numTickPriority == 10){
             /***  sblocco tutti i processi bloccati dalla SYS7   ***/
-            while (semDevice[MAX_DEVICES-1] < 0) {
-                ///SYS CALL V sul semaforo semDevice[MAX_DEVICES-1]
+            while (semDevice[CLOCK_SEM] < 0) {
+                ///SYS CALL V sul semaforo semDevice[CLOCK_SEM]
+                semV (&(semDevice[CLOCK_SEM]));
             }
         }
         /***   resetto il clock considerando il ritardo ***/
-        setPseudoClock(true);
+        setPseudoClock(TRUE);
     }
     if(getCompleteTimeSlice()){
         if(curProc != NULL){
             insertProcQ(&readyQueue, curProc);
             curProc = NULL;
             //aggiorno il clock
-            setPseudoClock(false);
+            setPseudoClock(FALSE);
         }
     }
 }
@@ -111,7 +112,7 @@ uint getDeviceFromBitmap(int * lineAddr) {
 
 void acknowledge(uint semIndex, devreg_t *devRegister, ack_type typeAck) {
     // Quando un processo è bloccato su un device, ritorna un risultato dell'operazione e ack della fine
-    if(semDevice[semIndex] < 1) {
+    if(semDevice[semIndex] < 0) {
         pcb_t *processo = headBlocked(&semDevice[semIndex]);
         switch(typeAck){
             case ACK_GEN_DEVICE:
@@ -130,5 +131,6 @@ void acknowledge(uint semIndex, devreg_t *devRegister, ack_type typeAck) {
 
         }
         //SYS CALL V sul semaforo semDevice[semIndex]
+        semV (&(semDevice[semIndex]));
     }
 }

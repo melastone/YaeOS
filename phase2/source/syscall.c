@@ -40,29 +40,25 @@
 
 // Funzione ricorsiva ausiliaria per la terminateProcess
 void terminateRec(pcb_t *proc) {
+	pcb_t * proc_child = removeChild(proc);
 
-	while ((proc->p_first_child) != NULL) {
+	while (proc_child != NULL) {
 		terminateRec(removeChild(proc)) ;
+		proc_child = removeChild(proc);
 	}
 
-	// Se il processo è in esecuzione
-	if (proc == curProc) {
-		curProc = NULL ;
+	// Controllo se il processo è bloccato su un semaforo
+	if (!proc->p_semKey) {
+		outProcQ(&(readyQueue),proc);
+	}else{
+		outChild(proc);
+		if((proc->p_semKey >= &(semDevices[0])) && (proc->p_semKey <= &(semDevices[MAX_DEVICES-1]))){
+			softBlockCounter--;
+		}
+		*(proc->p_semKey) = *(proc->p_semKey) +1;
 	}
-
-	// Se il processo è bloccato su un semaforo
-	if (proc->p_semKey != NULL) {
-		// Se è un semaforo di un device diminuisco il numero di proc softBlocked
-		// Altrimenti devo cambiare il valore del semaforo
-	}
-
-	// Se il processo è nella readyQueue
-	else {
-		outProcQ(&readyQueue, proc) ;
-	}
-
-	outChild(proc) ;
-	freePcb(proc) ;
+	freePcb(proc);
+	processCounter--;
 }
 
 
@@ -127,23 +123,20 @@ int createProcess (state_t *statep, int priority, void **cpid) {
 
 	pcb_t* newP = allocPcb() ;
 
-	// Se non ci sono pcb liberi la funzione deve ritornare -1
+		// Se non ci sono pcb liberi la funzione deve ritornare -1
 	if (newP != NULL) {
-
-		((*newP)->p_priority) = priority ;
-
 		// Setto i valori di state_t del nuovo processo come quelli del genitore
-		saveCurState(statep, &((*newP)->p_s)) ;
-
+		saveCurState(statep, &(newP->p_s));
+		cpid = &(newP);
+		(newP->p_priority) = priority ;
+		(newP->time) = getTODLO();
 		processCount++ ;
 
 		// Creo i legami di parentela e inserisco il nuovo processo nella coda dei ready
 		insertChild(curProc, newP) ;
 		insertProcQ(&readyQueue, newP) ;
 
-		(*newP)->activation_time = getTODLO() ;
 
-		cpid = newP ;
 		return 0 ;
 
 	}
@@ -163,12 +156,15 @@ int createProcess (state_t *statep, int priority, void **cpid) {
 int terminateProcess (void *pid) {
 
 	if (pid == NULL) {
-
+		
 		if(curProc->p_parent != NULL) {
-	  		semV((int) curProc->p_parent);
+			int * parentSem = (int *) curProc->p_parent;
+			outChild(curProc);
+			terminateRec(curProc);
+			curProc = NULL;
+	  		semV((parentSem);
 	  	}
 
-	  	terminateRec(curProc) ;
 	  	return ;
  	}
 
@@ -177,11 +173,12 @@ int terminateProcess (void *pid) {
 		pcb_t p = (*pid) ;
 
 		if(p->p_parent != NULL) {
-		   		
-		   	semV((int) p->p_parent);
+		   	int * parentSem = (int *) curProc->p_parent;
+			outChild(p);
+			terminateRec(p);
+		   	semV(parentSem);
 		}
 		
-		terminateRec(p) ;
 		return 0 ;
  	}
 
@@ -202,10 +199,7 @@ void semP (int *semaddr) {
 	(*semaddr)-- ;
 
 	if ((*semAddr) < 0) {
-
-		// TODO
-		updateTime();
-
+		curProc->kernelTime += getTODLO() - getKernelStart();
 		// Inserisci il processo nella coda dei processi bloccati
 		insertBlocked(semaddr, curProc);
 		softBlockCounter++;
@@ -239,8 +233,6 @@ void semV (int *semaddr) {
 			softBlockCounter--;
 			insertProcQ(&readyQueue, removedProc);
 		}
-
-
 	}
 
 }
@@ -323,13 +315,14 @@ int specHdl (int type, state_t *old, state_t *new) {
 		– Il tempo trascorso dalla prima attivazione del processo.
 */
 void getTime (cputime_t *user, cputime_t *kernel, cputime_t *wallclock) {
+	curProc->kernelTime += getTODLO() - getKernelStart();
+	(*user) = (curProc->userTime) ;
 
-	(*user) = (curProc->global_time) - (curProc->kernel_time) ;
+	(*kernel) = (curProc->kernelTime) ;
 
-	(*kernel) = (curProc->kernel_time) ;
+	(*wallclock) = getTODLO() - (curProc->time) ;
 
-	(*wallclock) = getTODLO() - (curProc->activation_time) ;
-
+	setKernelStart();
 }
 
 
@@ -344,12 +337,12 @@ void getTime (cputime_t *user, cputime_t *kernel, cputime_t *wallclock) {
 void waitClock () {
 
 	semDevices[CLOCK_SEM]-- ;
-	softBlocked++ ;
+	if(semDevices[CLOCK_SEM] < 0){
+		semP(&(semDevices[CLOCK_SEM])) ;
+	}else{
+		PANIC();
+	}
 
-	semP(&(semDevices[CLOCK_SEM])) ;
-
-	curProc = NULL ;
-	scheduler() ;
 }
 
 
@@ -494,7 +487,7 @@ void getPids(void **pid, void **ppid) {
 void waitChild() {
 
  	if(curProc->p_first_child != NULL) {
-
+		curProc->kernelTime += getTODLO() - getKernelStart();
   		semP((int) *curProc);
 
  	} 
