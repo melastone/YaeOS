@@ -47,14 +47,16 @@ void sysHandler() {
 	if (CAUSE_EXCCODE_GET(sysbp_old->CP15_Cause) == EXC_SYSCALL && sysbp_old->a1 >= 1 && sysbp_old->a1 <= 10) {
 
 		//controllo se la modaltà di esecuzione è USER MODE
-		if((curProc->p_s.cpsr & STATUS_USER_MODE) == STATUS_USER_MODE) {
-			saveCurState(sysbp_old, pgmtrap_old);
-			pgmtrap_old->CP15_Cause = CAUSE_EXCCODE_SET(pgmtrap_old->CP15_Cause, EXC_RESERVEDINSTR);
-			pgmHandler();
-		}
+		// if((curProc->p_s.cpsr & STATUS_USER_MODE) == STATUS_USER_MODE) {
+		// 	saveCurState(sysbp_old, pgmtrap_old);
+		// 	pgmtrap_old->CP15_Cause = CAUSE_EXCCODE_SET(pgmtrap_old->CP15_Cause, EXC_RESERVEDINSTR);
+		// 	pgmHandler();
+		// }
 		
 		//controllo che la modalità di esecuzione sia SYSTEM MODE (KERNEL) 
-		else if((curProc->p_s.cpsr & STATUS_SYS_MODE) == STATUS_SYS_MODE) {
+		/*else*/ if((curProc->p_s.cpsr & STATUS_SYS_MODE) == STATUS_SYS_MODE) {
+
+
 			saveCurState(sysbp_old, &(curProc->p_s));
 			curProc->userTime += getTODLO() - getUserStart();
 			setKernelStart();

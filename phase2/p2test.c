@@ -362,22 +362,22 @@ void test(void) {
 	p7state.sp = get_stack_area();
 	p7state.pc = (memaddr) p7;
 	
-	print("test started\n");
+	/*print("test started\n");*/
 	SYSCALL(CREATEPROCESS, (memaddr)&p1state, 10, (memaddr)&p1addr);
 
 	SYSCALL(GETPIDS, (memaddr)&p0addr, (memaddr)&p0paddr, 0);
 	if (p0paddr != NULL) {
-		print("GETPIDS: wrong ppid of root process\n");
+		/*print("GETPIDS: wrong ppid of root process\n");*/
 		PANIC();
 	}
 
 	SYSCALL(SEMP, (memaddr)&p1ok, 0, 0);
 	if (p1p0addr != p0addr) {
-		print("GETPIDS: wrong ppid of p1 process\n");
+		/*print("GETPIDS: wrong ppid of p1 process\n");*/
 		PANIC();
 	}
 	if (p1p1addr != p1addr) {
-		print("GETPIDS: wrong pid of p1 process\n");
+		/*print("GETPIDS: wrong pid of p1 process\n");*/
 		PANIC();
 	}
 	
@@ -387,7 +387,7 @@ void test(void) {
 	SYSCALL(CREATEPROCESS, (memaddr)&p1state, 10, (memaddr)&p1addr);
 	SYSCALL(SEMP, (memaddr)&p1ok, 0, 0);
 	SYSCALL(SEMV, (memaddr)&p1sem, 0, 0);
-	print("p0: Test of interleaved prints\n");
+	/*print("p0: Test of interleaved prints\n");*/
 	SYSCALL(WAITCHLD, 0, 0, 0);
 
 	SYSCALL(CREATEPROCESS, (memaddr)&p2state, 10, (memaddr)NULL);
