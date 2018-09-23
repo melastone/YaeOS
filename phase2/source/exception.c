@@ -67,10 +67,10 @@ void sysHandler() {
 				switch (a1) {
 					//casi SYSCALL
 					case CREATEPROCESS:
-						createProcess(a2, a3, a4);
+						createProcess->p_s.a1 = createProcess(a2, a3, a4);
 						break;
 					case TERMINATEPROCESS:
-						terminateProcess(a2);
+						createProcess->p_s.a1 = terminateProcess(a2);
 						break;
 					case P:
 						semP(a2);
@@ -79,7 +79,7 @@ void sysHandler() {
 						semV(a2);
 						break;
 					case SPECHDL:
-						specHdl(a2, a3, a4);
+						createProcess->p_s.a1 = specHdl(a2, a3, a4);
 						break;
 					case GETTIME:
 						getTime(a2, a3, a4);
@@ -88,7 +88,7 @@ void sysHandler() {
 						waitClock();
 						break;
 					case IODEVOP:
-						ioDevop(a2, a3);
+						createProcess->p_s.a1 = ioDevop(a2, a3);
 						break;
 					case GETPIDS:
 						getPids(a2, a3);
@@ -207,10 +207,6 @@ void tlbHandler() {
 	una routine di gestione di livello superiore per il tipo di eccezione sollevata
 	ritornano 0 (TRUE), altrimenti 1 (FALSE)
 */
-
-// HA SENSO FARE I CONTROLLI ANCHE SU "old" ??
-
-
 
 unsigned int checkSysBpHandler() {
 	if(curProc->old_sysBp != NULL && curProc->new_sysBp != NULL)
