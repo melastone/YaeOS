@@ -3,6 +3,8 @@
 #include <arch.h>
 #include <libuarm.h>
 #include <const.h>
+#include <types.h>
+#include <init.h>
 
 #define BYTELEN 8
 
@@ -12,6 +14,9 @@
 #define CLOCKINTERVAL   100000UL        /* interval to V clock semaphore */
 #define CLOCKLOOP               10
 #define MINCLOCKLOOP            3000
+#define SPECSYSBP				0
+#define SPECTLB					1
+#define SPECPGMT             	2
 
 #include <pcb.h>
 #include <asht.h>
@@ -41,7 +46,7 @@ void *p1p1addr, *p1p0addr;
 
 int p3inc;
 
-void print(char *msg) {
+void print(char *msg) { 
 	unsigned int status;
 
 	SYSCALL(SEMP, (memaddr)&term_mutex, 0, 0);
@@ -106,11 +111,9 @@ void p2(void) {
 	for (i = 0; i < CLOCKLOOP; i++)
 		SYSCALL(WAITCLOCK, 0, 0, 0);
 	SYSCALL(GETTIME, (memaddr)&usr_t2, (memaddr)&kernel_t2, (memaddr)&wall_t2);
-
+	
 	//SYSCALL(GETTIME, (int)&glob_t2, (int)&usr_t2, 0);    /* process time */
-
-	if (((usr_t2 - usr_t1) > MINCLOCKLOOP) || ((usr_t2 + kernel_t2 - usr_t1 - kernel_t1) < MINCLOCKLOOP) ||
-			(usr_t2 + kernel_t2 - usr_t1 - kernel_t1) > (wall_t2 - wall_t1))
+	if (((usr_t2 - usr_t1) > MINCLOCKLOOP) || ((usr_t2 + kernel_t2 - usr_t1 - kernel_t1) < MINCLOCKLOOP) || ((usr_t2 + kernel_t2 - usr_t1 - kernel_t1) > (wall_t2 - wall_t1)))
 		print("error: p2 - CPU time incorrectly maintained\n");
 	else
 		print("p2 - CPU time correctly maintained\n");
@@ -226,16 +229,13 @@ void p4b(void) {
 	SYSCALL(13, 0, 0, 0);
 
 	SYSCALL(SEMP, (memaddr)&testp5, 0, 0);
-
-	/* second call for SPECTRAPVEC/SPECPGMT terminate! */
-	if(SYSCALL(SPECHDL, SPECPGMT, (int)&p4pgm_old, (int)&p4pgm_new) != -1){
-		print("error - p4b still executing\n");
-		PANIC();
-	}
-	SYSCALL(TERMINATEPROCESS,0,0,0);
-	print("error - p4b ran SPECHDL twice for SPECPGMT\n");
-	PANIC();
 	
+	/* second call for SPECTRAPVEC/SPECPGMT terminate! */
+	if(SYSCALL(SPECHDL, SPECPGMT, (int)&p4pgm_old, (int)&p4pgm_new) == -1)
+		SYSCALL(TERMINATEPROCESS, 0, 0, 0);
+	
+	print("error - p4b still executing\n");
+	PANIC();
 }
 
 void p4(void) {
@@ -270,7 +270,7 @@ void p5(void) {
 	p5p6race = 5;
 	SYSCALL(SEMV, (memaddr)&p5p6_mutex, 0, 0);
 
-	print("p5 trying to request SYS13 without setting trap vector\n");
+	print("cp5 trying to request SYS13 without setting trap vector\n");
 
 	SYSCALL(13, 0, 0, 0);
 
@@ -332,6 +332,7 @@ void p7(void) {
 	SYSCALL(TERMINATEPROCESS, 0, 0, 0);
 }
 
+	
 void test(void) {
 	void *p1addr, *p0addr, *p0paddr;
 	STST(&p1state);
@@ -363,7 +364,7 @@ void test(void) {
 	STST(&p7state);
 	p7state.sp = get_stack_area();
 	p7state.pc = (memaddr) p7;
-
+	
 	print("test started\n");
 	SYSCALL(CREATEPROCESS, (memaddr)&p1state, 10, (memaddr)&p1addr);
 
@@ -382,7 +383,7 @@ void test(void) {
 		print("GETPIDS: wrong pid of p1 process\n");
 		PANIC();
 	}
-
+	
 	SYSCALL(TERMINATEPROCESS, (memaddr)p1addr, 0, 0);
 	SYSCALL(WAITCHLD, 0, 0, 0);
 	p1state.pc = (memaddr) p1a;
@@ -405,6 +406,7 @@ void test(void) {
 	SYSCALL(WAITCHLD, 0, 0, 0);
 	SYSCALL(WAITCHLD, 0, 0, 0);
 	SYSCALL(WAITCHLD, 0, 0, 0);
+
 
 	if (p5p6race != 5) {
 		print("Wrong management of process priority\n");
