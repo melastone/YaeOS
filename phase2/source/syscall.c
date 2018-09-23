@@ -211,11 +211,11 @@ void waitClock () {
 // status (che indica quindi il successo o meno dell’operazione). I terminali sono device 
 // “doppi”: c’è un campo command per ricevere e uno per trasmettere (un solo processo alla
 // volta accede ad uno specifico device, i processi si sincronizzano tramite sezioni critiche).
-unsigned int IODevOp (unsigned int command, unsigned int *comm_device_register) {
+unsigned int ioDevop (unsigned int command, unsigned int *comm_device_register) {
 
 	(*comm_device_register) = command ;
 
-	
+
 
 }
 
