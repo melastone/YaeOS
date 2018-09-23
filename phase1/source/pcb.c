@@ -166,6 +166,18 @@ pcb_t *allocPcb() {
 	    pcb_rimosso->p_first_child = NULL ;
 	    pcb_rimosso->p_sib = NULL ;
 
+	    pcb_rimosso->old_sysBp = NULL ;
+	    pcb_rimosso->new_sysBp = NULL ;
+	    pcb_rimosso->old_tlb = NULL ;
+	    pcb_rimosso->new_tlb = NULL ;
+	    pcb_rimosso->old_pgm = NULL ;
+	    pcb_rimosso->new_pgm = NULL ;
+
+	    pcb_rimosso->time = 0 ;
+	    pcb_rimosso->kernelTime = 0 ;
+	    pcb_rimosso->userTime = 0 ;
+	    pcb_rimosso->base_priority = 0 ;
+
 	    //Inizializzo tutti i campi della struttura p_s a null
 	    pcb_rimosso->p_s.a1 = 0;
 		pcb_rimosso->p_s.a2 = 0 ;

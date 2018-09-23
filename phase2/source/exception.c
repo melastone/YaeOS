@@ -67,7 +67,6 @@ void sysHandler() {
 			uint a4 = sysbp_old->a4;
 
 			// Eseguo la SYSCALL correlativa al valore salvato nel registro di stato a1. 
-			if (sysbp_old->CP15_Cause == EXC_SYSCALL) {
 				switch (a1) {
 					//casi SYSCALL
 					case CREATEPROCESS:
@@ -105,9 +104,6 @@ void sysHandler() {
 				}
 
 				scheduler();
-
-			} else 
-				PANIC();
 		}
 
 	} 
