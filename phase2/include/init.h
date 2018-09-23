@@ -32,7 +32,21 @@
 *                        FUNZIONI ESTERNE                      *
 ***************************************************************/
 
+<<<<<<< .mine
+extern void test();
+extern void scheduler();
+extern void intHandler();
+extern void tlbHandler();
+extern void pgmHandler();
+extern void sysHandler();
+
+||||||| .r185
+extern void test();
+extern void scheduler();
+
+=======
 void test();
+>>>>>>> .r187
 /***************************************************************
 *                        VARIABILI KERNEL                      *
 ***************************************************************/
@@ -50,7 +64,7 @@ int semDevices[MAX_DEVICES];
 ***************************************************************/
 
 
-void initArea(memaddr area, memaddr handler);
+extern void initArea(memaddr area, memaddr handler);
 
 
 
