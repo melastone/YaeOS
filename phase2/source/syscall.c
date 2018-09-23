@@ -22,11 +22,11 @@
 #include <uARMtypes.h>
 #include <uARMconst.h>
 #include <libuarm.h>
-#include "const.h"
-#include "exception.h"
-#include "syscall.h"
-#include "pcb.h"
-#include "asht.h"
+#include <const.h>
+#include <exception.h>
+#include <syscall.h>
+#include <pcb.h>
+#include <asht.h>
 
 
 
@@ -178,7 +178,7 @@ int specHdl (int type, state_t *old, state_t *new)
 // – Il tempo usato dal processo in modalità kernel (gestione system call e interrupt 
 //   relativi al processo)
 // – Il tempo trascorso dalla prima attivazione del processo.
-void getTime (cputime_t *user, cputime_t *kernel, cputime_t *wallclock) {
+void getTime (cpu_t *user, cpu_t *kernel, cpu_t *wallclock) {
 
 	(*user) = (curProc->global_time) - (curProc->kernel_time) ;
 
