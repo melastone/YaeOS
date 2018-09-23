@@ -16,9 +16,7 @@
 #ifndef INTERRUPTS_H
 #define INTERRUPTS_H
 
-#include "pseudoTimer.h"
-#include "const.h"
-#include "types.h"
+#include <init.h>
 
 /***************************************************************
 *                         HANDLER                       	   *

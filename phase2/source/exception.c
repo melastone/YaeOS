@@ -45,17 +45,17 @@ void sysHandler() {
 	if (CAUSE_EXCCODE_GET(sysbp_old->CP15_Cause) == EXC_SYSCALL && sysbp_old->a1 >= 1 && sysbp_old->a1 <= 10) {
 
 		//controllo se la modaltà di esecuzione è USER MODE
-		//ricordiamo & bit a bit (secondo me non guardo curProc ma sysbp, e chiama pgm Handler o sys2 per terminare) <---!!!!
-		if(curProc->p_s.cpsr == STATUS_USER_MODE) {
+		if((curProc->p_s.cpsr & STATUS_USER_MODE) == STATUS_USER_MODE) {
 			copyState(sysbp_old, pgmtrap_old);
 			pgmtrap_old->CP15_Cause = CAUSE_EXCCODE_SET(pgmtrap_old->CP15_Cause, EXC_RESERVEDINSTR);
 			pgmHandler();
 		}
 		
 		//controllo che la modalità di esecuzione sia SYSTEM MODE (KERNEL) 
-		//ricordiamo & bit a bit
-		else if(curProc->p_s.cpsr == STATUS_SYS_MODE) {
+		else if((curProc->p_s.cpsr & STATUS_SYS_MODE) == STATUS_SYS_MODE) {
 			copyState(sysbp_old, curProc->p_s);
+			curProc->userTime += getTODLO() - getUserStart();
+			setKernelStart();
 			//creo variabili relative ai registri di stato a1 ... a4
 			uint a1 = sysbp_old->a1;
 			uint a2 = sysbp_old->a2;
@@ -109,48 +109,42 @@ void sysHandler() {
 	} 
 	//Controllo che sia stata richiesta l'esecuzione di una SYSCALL e che questa sia maggiore di 11 (SYS > 11)
 	else if(CAUSE_EXCCODE_GET(sysbp_old->CP15_Cause) == EXC_SYSCALL && sysbp_old->a1 >= 11) {
-			/*
-				Controllo che il tipo dell'handler specificato nel registro di stato a2 sia correttamente settato.
-			*/
-			if(sysbp_old->a2 != NULL && (sysbp_old->a2 >= 0 && sysbp_old->a2 <= 2)){
+		/* 
+		Controllo se è presente un gestore di livello superiore, se presente carico l'indirizzo 
+		relativo alla routine di livello superiore, altrimenti termino il processo
+		che ha causato l'eccezione.
+		*/
 
-				/* 
-					Controllo se è presente un gestore di livello superiore, se presente carico l'indirizzo 
-					relativo alla routine di livello superiore, altrimenti termino il processo
-					che ha causato l'eccezione.
-				 */
-
-						if(checkSysBpHandler()) {
-							copyState(sysbp_old, curProc->old_sysBp);
-							//copyState(curProc->new_sysBp, &(currentProcess->p_s));
-							LDST(curProc->new_sysBp);
-						} else {
-							terminateProcess (NULL);
-						}
-						scheduler(); 
-	
-
-			} 
-		}
-		// Controllo se la l'eccezione è di tipo BREAKPOINT 
-		else {
-			 
-			if(CAUSE_EXCCODE_GET(sysbp_old->CP15_Cause) == EXC_BREAKPOINT) {
-
-				if(checkSysBpHandler()) {
-					copyState(sysbp_old, curProc->old_sysBp);
-					//copyState(curProc->new_sysBp, &(currentProcess->p_s));
-					LDST(curProc->new_sysBp);
-				} 
-				else {
-					terminateProcess (NULL);
-				}	
-				scheduler(); 
+			if(checkSysBpHandler()) {
+				curProc->userTime += getTODLO() - getUserStart();
+				setKernelStart();
+				copyState(sysbp_old, curProc->old_sysBp);
+				copyState(curProc->new_sysBp, &(currentProcess->p_s));
+			} else {
+				terminateProcess (NULL);
 			}
-			else
-				PANIC();
- 
+			scheduler(); 
+	}
+	// Controllo se la l'eccezione è di tipo BREAKPOINT 
+	else {
+			
+		if(CAUSE_EXCCODE_GET(sysbp_old->CP15_Cause) == EXC_BREAKPOINT) {
+
+			if(checkSysBpHandler()) {
+				curProc->userTime += getTODLO() - getUserStart();
+				setKernelStart();
+				copyState(sysbp_old, curProc->old_sysBp);
+				copyState(curProc->new_sysBp, &(currentProcess->p_s));
+			} 
+			else {
+				terminateProcess (NULL);
+			}	
+			scheduler(); 
 		}
+		else
+			PANIC();
+
+	}
 
 }
 
@@ -164,19 +158,15 @@ void sysHandler() {
 void pgmHandler() {
 
 	if(checkPGMHandler()) {
-
+		curProc->userTime += getTODLO() - getUserStart();
+		setKernelStart();
 		copyState(pgmtrap_old, curProc->old_pgm);
-		LDST(curProc->new_pgm);
-
+		copyState(curProc->new_pgm, &(currentProcess->p_s));
 	}
-	 
 	else {
-
 		terminateProcess(NULL);
-		scheduler();
-
 	}
-	
+	scheduler();
 }
 
 
@@ -188,19 +178,16 @@ void pgmHandler() {
 */
 void tlbHandler() {
 
-		if(checkTLBHandler()) {
-
+		if(checkTLBHandler()) {	
+			curProc->userTime += getTODLO() - getUserStart();
+			setKernelStart();
 			copyState(tlb_old, curProc->old_tlb); 
-			LDST(curProc->new_tlb);
-
+			copyState(curProc->new_tlb,&(currentProcess->p_s));
 		}
-		
 		else {
-
 			terminateProcess(NULL);
-			scheduler();
-
 		}
+		scheduler();
 
 }
 

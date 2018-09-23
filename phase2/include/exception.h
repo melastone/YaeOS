@@ -17,8 +17,7 @@
 #ifndef EXCEPTION_H
 #define EXCEPTION_H
 
-#include <types.h>
-#include <uARMconst.h>
+#include <init.h>
 #include <syscall.h>
 
 /***************************************************************

@@ -16,13 +16,11 @@
 #include "interrupts.h"
 
 
-int semDevice[MAX_DEVICES];
-
-
 void intHandler() {
     state_t *oldState = (state_t *) INT_OLDAREA;
     if(curProc != NULL){
         curProc->userTime += (getTODLO() - getUserStart());  //memorizzo il tempo trascorso in user mode
+        setKernelStart();
         (*oldState).pc -= WORD_SIZE;               /// Aggiorniamo il PC al istruzione che ha causato interrupt
         //salvataggio del nuovo stato del processo attivo 
         copyState(oldState, &(curProc->p_s));
@@ -46,10 +44,10 @@ void intHandler() {
 void timerHandler() {
     /***  aggiorno il clock  ***/
     setPseudoClock(false);
-    setCallTimer(true);
+    setisCallInterruptTimer(true);
     if(getPseudoClock() >= TICK_PRIORITY){
         /***   chiamo lo scheduler e aumento la priorità dei processi in attesa ***/
-
+        readyQueueAging();
         int numTickPriority = incTickPriority();
         if(numTickPriority == 10){
             /***  sblocco tutti i processi bloccati dalla SYS7   ***/
@@ -61,13 +59,13 @@ void timerHandler() {
         setPseudoClock(true);
     }
     if(getCompleteTimeSlice()){
-        if(/*** controllo se c'è un processo in esecuzione ***/){
-            insertProcQ(/**&coda ready,processo in esecuzione*/);
+        if(curProc != NULL){
+            insertProcQ(&readyQueue, curProc);
+            curProc = NULL;
             //aggiorno il clock
             setPseudoClock(false);
         }
     }
-    //DISCUTERE SE METTERLO QUA O NELLO SCHEDULER setTimer();
 }
 
 void deviceHandler(int type){
@@ -75,8 +73,8 @@ void deviceHandler(int type){
     uint deviceNumber = getDeviceFromBitmap(bitmapLine);  //prendo il numero del device 
     devreg_t *deviceRegister = (devreg_t *) DEV_REG_ADDR(type,deviceNumber); //prendo il registro del device
 
-    uint idice = EXT_IL_INDEX(type) * N_DEV_PER_IL + deviceNumber;
-    acknowledge(index, deviceRegister, ACK_GEN_DEVICE);
+    uint indice = EXT_IL_INDEX(type) * N_DEV_PER_IL + deviceNumber;
+    acknowledge(indice, deviceRegister, ACK_GEN_DEVICE);
 }
 
 void terminalHandler() {
@@ -84,15 +82,15 @@ void terminalHandler() {
     uint terminalNumber = getDeviceFromBitmap(bitmapLine);
     devreg_t *terminalRegister = (devreg_t *) DEV_REG_ADDR(type,deviceNumber);
 
-    uint index = 0;
+    uint indice = 0;
 
     if((terminalRegister->term.transm_status & 0x0000000F) == DEV_TTRS_S_CHARTRSM) {
-        index = EXT_IL_INDEX(INT_TERMINAL) * N_DEV_PER_IL + terminalNumber;
-        acknowledge(index, terminalRegister, ACK_TERM_TRANSMIT);
+        indice = EXT_IL_INDEX(INT_TERMINAL) * N_DEV_PER_IL + terminalNumber;
+        acknowledge(indice, terminalRegister, ACK_TERM_TRANSMIT);
     }
     else if((terminalRegister->term.recv_status & 0x0000000F) == DEV_TRCV_S_CHARRECV) {
-        index = EXT_IL_INDEX(INT_TERMINAL) * N_DEV_PER_IL + N_DEV_PER_IL + terminalNumber;
-        acknowledge(index, terminalRegister, ACK_TERM_RECIVE);
+        indice = EXT_IL_INDEX(INT_TERMINAL) * N_DEV_PER_IL + N_DEV_PER_IL + terminalNumber;
+        acknowledge(indice, terminalRegister, ACK_TERM_RECIVE);
     }
 }
 

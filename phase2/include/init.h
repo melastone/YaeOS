@@ -23,7 +23,7 @@
 #include <asht.h>
 #include <types.n>
 #include <libuarm.h>
-
+#include <pseudoTimer.h>
 
 #define memaddr unsigned int
 
@@ -33,7 +33,7 @@
 ***************************************************************/
 
 EXTERN void test();
-
+EXTERN void scheduler();
 
 /***************************************************************
 *                        VARIABILI KERNEL                      *

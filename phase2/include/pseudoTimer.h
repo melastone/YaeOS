@@ -35,4 +35,5 @@ int incTickPriority();
 
 bool getCompleteTimeSlice();
 
+void setisCallInterruptTimer(bool value);
 #endif

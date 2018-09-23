@@ -41,29 +41,26 @@ void scheduler() {
 			else {
 				PANIC();
 			}
-			
-
 		}
-
 		// Carico il primo processo dalla readyQueue 
 		// (che coincide con quello a priorità più alta)
 		curProc = removeProcQ(&readyQueue);
-
-
-
-		// TIME MANAGMENT ( da implementare )
-
-
+		//setto il tempo di inizo del processo 
+		if(curProc->time == 0){
+			curProc->time = getTODLO;
+		}
+		setPseudoClock(false);
 	}
 	// Esiste un processo attualmente in esecuzione
 	else {
-
-
-		// TIME MANAGMENT ( da implementare )
-
+		curProc->kernelTime += getTODLO() - kernelMode_Start;
+		setPseudoClock(false);
 	}
 
-
+	// setto il valore del interval timer 
+	setTimer();
+	isCallInterruptTimer(false);
+	setUserStart();
 	//CONTEXT SWITCH
 	//Carico lo stato del processo corrente nei registri
 	LDST(&(curProc->p_s));

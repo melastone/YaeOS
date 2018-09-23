@@ -74,7 +74,9 @@ int main() {
 	processCounter++;
 
 	//TEMPO PROCESSO?
-
+	initPseudoClock();
+	setisCallInterruptTimer(true);
+	setUserStart();
 	scheduler();
 
 	//-------------------------------------------------------
