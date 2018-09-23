@@ -14,6 +14,7 @@
  */
 
 
+#include "pcb.h"
 #include "pseudoTimer.h"
 #include "init.h"
 #include "scheduler.h"
@@ -24,20 +25,6 @@
 /***************************************************************
 *                           SCHEDULER                          *
 ***************************************************************/
-
-
-/*
-	SCHEDULER
-	Si occupa di regolare l'avvicendamento dei processi nella CPU: ogni processo ha un time-slice massimo di 3 ms 
-	e questi vengono prelevati dalla readyQueue sulla base della loro priorità. 
-	A tal proposito per far sì che tutti i processi arrivino poi ad aggiudicarsi un posto nel processore,
-	ogni 10 ms viene lanciata una funzione di aging (readyQueueAging()) che si occupa di incrementare di 1 
-	tutte le priorità dei processi nella readyQueue (purché questi non abbiano già priorità massima 10).
-	Lo scheduler comprende inoltre, un meccanismo di deadlock detection per prevenire e gestire nella maniera 
-	più opportuna possibili situazioni di stallo.
-*/
-
-
 
 void scheduler() {
 
@@ -59,14 +46,9 @@ void scheduler() {
 				PANIC();
 			}
 		}
-
-		/*
-			Carico il primo processo dalla readyQueue (che coincide con quello a priorità più alta) 
-			e risetto la sua priorità a quella con cui era stato creato
-		*/
-
+		// Carico il primo processo dalla readyQueue 
+		// (che coincide con quello a priorità più alta)
 		curProc = removeProcQ(&readyQueue);
-		curProc->p_priority = curProc->base_priority;
 		//setto il tempo di inizo del processo 
 		if(curProc->time == 0){
 			curProc->time = getTODLO();
@@ -95,9 +77,6 @@ void scheduler() {
 *                           AGING                              *
 ***************************************************************/
 
-/*
-	Funzione di aging per la readyQueue.
-*/
 
 void readyQueueAging() {
 
