@@ -13,9 +13,12 @@
  *
  */
 
-#include <interrupts.h>
+#include "pcb.h"
+#include "interrupts.h"
 #include "syscall.h"
 #include "scheduler.h"
+
+#include "pcb.h"
 
 void intHandler() {
     state_t *oldState = (state_t *) INT_OLDAREA;

@@ -38,12 +38,12 @@ INCL_DEFAULT = $(INCL_P1)/types.h $(INCL_P1)/const.h
 INCL_PCB = $(INCL_P1)/pcb.h $(INCL_DEFAULT)
 INCL_ASHT = $(INCL_P1)/pcb.h $(INCL_P1)/asht.h $(INCL_DEFAULT)
 
-INCL_EXC =
-INCL_INIT =
-INCL_INTR =
-INCL_PST =
-INCL_SCH =
-INCL_SYSC = $(INCL_DEFAULT) $(INCL_ASHT) $(INCL_P2)/syscall.h
+INCL_EXC = $(INCL_UARM)/uARMtypes.h $(INCL_P2)/exception.h $(INCL_P2)/scheduler.h
+INCL_INIT = $(INCL_PCB) $(INCL_P2)/exception.h $(INCL_P2)/init.h $(INCL_P2)/scheduler.h
+INCL_INTR = $(INCL_PCB) $(INCL_P2)/interrupts.h $(INCL_P2)/scheduler.h $(INCL_P2)/syscall.h
+INCL_PST = $(INCL_DEFAULT) $(INCL_P2)/pseudoTimer.h
+INCL_SCH = $(INCL_PCB) $(INCL_P2)/init.h $(INCL_P2)/pseudoTimer.h $(INCL_P2)/scheduler.h
+INCL_SYSC = $(INCL_ASHT) $(INCL_P2)/exception.h $(INCL_P2)/init.h $(INCL_P2)/syscall.h
 
 # Source files paths
 SRC_P1 = $(P1)/source
@@ -59,8 +59,8 @@ yaeOS: p1 kernel
 p1: pcb.o asht.o test-pcb.o
 	$(UL) $(FLAG_UL) -o $@ pcb.o asht.o test-pcb.o
 
-kernel: $(OBJECTS_P2)
-	$(UL) $(FLAG_UL) -o $@ exception.o init.o interrupts.o pseudoTimer.o scheduler.o syscall.o p2test.o
+kernel: pcb.o asht.o exception.o init.o interrupts.o pseudoTimer.o scheduler.o syscall.o p2test.o
+	$(UL) $(FLAG_UL) -o $@ pcb.o asht.o exception.o init.o interrupts.o pseudoTimer.o scheduler.o syscall.o p2test.o
 
 pcb.o: $(SRC_P1)/pcb.c $(INCL_PCB)
 	$(CC) $(FLAG_CC_P1) $(SRC_P1)/pcb.c

@@ -14,6 +14,7 @@
  */
 
 
+#include "pcb.h"
 #include "init.h"
 #include "scheduler.h"
 #include "exception.h"
