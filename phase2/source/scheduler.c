@@ -45,9 +45,14 @@ void scheduler() {
 				PANIC();
 			}
 		}
-		// Carico il primo processo dalla readyQueue 
-		// (che coincide con quello a priorità più alta)
+
+		/*
+			Carico il primo processo dalla readyQueue (che coincide con quello a priorità più alta) 
+			e risetto la sua priorità a quella con cui era stato creato
+		*/
+
 		curProc = removeProcQ(&readyQueue);
+		curProc->p_priority = curProc->base_priority;
 		//setto il tempo di inizo del processo 
 		if(curProc->time == 0){
 			curProc->time = getTODLO();

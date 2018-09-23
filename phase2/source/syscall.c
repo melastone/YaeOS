@@ -122,6 +122,7 @@ int createProcess (state_t *statep, int priority, void **cpid) {
 		saveCurState(statep, &(newP->p_s));
 		*cpid = &(newP);
 		(newP->p_priority) = priority ;
+		(newP->base_priority) = priority;
 		(newP->time) = getTODLO();
 		processCounter++ ;
 
